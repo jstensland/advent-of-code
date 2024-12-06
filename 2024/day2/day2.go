@@ -2,6 +2,7 @@ package day2
 
 import (
 	"bufio"
+	"errors"
 	"fmt"
 	"io"
 	"iter"
@@ -11,21 +12,25 @@ import (
 	"strings"
 )
 
+var ErrEmptyReport = errors.New("error empty report")
+
 func RunPart1(inFile string) (int, error) {
 	reader, err := os.Open(inFile)
 	if err != nil {
 		return 0, fmt.Errorf("failed to open file %s: %w", inFile, err)
 	}
-	defer reader.Close()
+	return Part1Analysis(reader)
+}
 
+func Part1Analysis(in io.ReadCloser) (int, error) {
 	safeCount := 0
-	reports, err := loadReports(reader)
+	reports, err := loadReports(in)
 	if err != nil {
 		return 0, fmt.Errorf("failed to load reports: %w", err)
 	}
+	defer in.Close()
 
 	for _, report := range reports {
-		// for report := range readReports(reader) {
 		if report.Safe() {
 			safeCount++
 		}
@@ -62,26 +67,17 @@ type Report struct {
 	levels []int
 }
 
-// Levels returns a copy of the current report for inspection
-// this should really be moved to an export_test.go or rethought
-// to not be needed.
-func (r Report) Levels() []int {
-	return slices.Clone(r.levels)
-}
-
 // Safe says if the report is safe or not
 //
 // safe report
 // - levels are all increasing
 // - levels differ, but by no more than 3
 func (r Report) Safe() bool {
-	if len(r.levels) < 3 { // what about 0?... skip or safe?
-		return true
-	}
-
-	// need a change on all. first change defines direction
-	if r.levels[0] == r.levels[1] {
-		return false
+	switch len(r.levels) {
+	case 0:
+		panic("empty report is invalid")
+	case 1:
+		return true // one level is safe
 	}
 
 	increasing := r.levels[1] > r.levels[0]
@@ -96,12 +92,14 @@ func (r Report) Safe() bool {
 
 // SafeDampened allows the removal of one number to create a safe report
 func (r Report) SafeDampened() bool {
-	if len(r.levels) < 3 { // what about 0?... skip or safe?
-		fmt.Println("there were 0 levels. look into this") // TODO: remove
-		return true
+	switch len(r.levels) {
+	case 0:
+		panic("empty report is invalid")
+	case 1:
+		return true // one level is safe
 	}
+
 	safe := true
-	// TODO: move idx determination into PossibleFixes
 	increasing := r.levels[1] > r.levels[0]
 	for idx, level := range r.levels {
 		if idx == 0 {
@@ -124,8 +122,11 @@ func (r Report) SafeDampened() bool {
 	return safe
 }
 
-// possibleFixes recieves the index where the first non-conforming value is for the
+// PossibleFixes recieves the index where the first non-conforming value is for the
 // repot, and returns possible deletions
+//
+// INFO: Results are not always unique. Could keep track of what has been returned and
+// skip it if it's already returned.
 func (r Report) PossibleFixes(problemIdx int) iter.Seq[Report] {
 	firstRemoved := false
 	return func(yield func(r Report) bool) {
@@ -194,6 +195,9 @@ func loadReports(in io.Reader) ([]Report, error) {
 	for scanner.Scan() {
 		rep, err := ParseReport(scanner.Text())
 		if err != nil {
+			if errors.Is(err, ErrEmptyReport) {
+				continue
+			}
 			return nil, fmt.Errorf("failed to parse report: %w", err)
 		}
 		out = append(out, rep)
@@ -207,6 +211,9 @@ func loadReports(in io.Reader) ([]Report, error) {
 
 func ParseReport(raw string) (Report, error) {
 	fields := strings.Fields(raw)
+	if len(fields) == 0 {
+		return Report{}, ErrEmptyReport
+	}
 	levels := make([]int, len(fields))
 	var err error
 	for i, field := range fields {
@@ -217,34 +224,4 @@ func ParseReport(raw string) (Report, error) {
 	}
 
 	return Report{levels}, nil
-}
-
-// refactor out the reading and converting...
-// since I don't want to hold things in memory, just opt
-// for scanning normally, and then a function that converts
-// each line to a report
-func readReports(in io.Reader) iter.Seq[Report] {
-	scanner := bufio.NewScanner(in)
-	return func(yield func(r Report) bool) {
-		for scanner.Scan() {
-			if err := scanner.Err(); err != nil {
-				// don't panic... but how to handle an error
-				// in an iterator...
-				panic(err)
-			}
-
-			fields := strings.Fields(scanner.Text())
-			levels := make([]int, len(fields))
-			var err error
-			for i, field := range fields {
-				levels[i], err = strconv.Atoi(field)
-				if err != nil {
-					panic(err)
-				}
-			}
-			if !yield(Report{levels}) {
-				return
-			}
-		}
-	}
 }
