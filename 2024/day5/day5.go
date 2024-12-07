@@ -24,6 +24,24 @@ func RunPart1(in io.ReadCloser) (int, error) {
 	return total, nil
 }
 
+func RunPart2(in io.ReadCloser) (int, error) {
+	rules, updates, err := ParseInput(in)
+	if err != nil {
+		return 0, fmt.Errorf("error parsing input file: %w", err)
+	}
+
+	total := 0
+	for _, update := range updates {
+		if rules.Check(update) {
+			// skip if doesn't need a fix
+			continue
+		}
+		slices.SortFunc(update, rules.SortFunc)
+		total += update.Middle()
+	}
+	return total, nil
+}
+
 type Rules struct {
 	// map of pages, to other pages that cannot come after
 	exclusions map[int][]int
@@ -45,6 +63,28 @@ func (r Rules) Check(up Update) bool {
 	}
 	return true
 }
+
+// SortFunc compares the two pages and returns if a should come before b
+// return a negative number when a < b
+// positive number when a > b
+// zero when a == b
+//
+// if there's a rule that a should come before b, return -1
+func (r Rules) SortFunc(a, b int) int {
+	// if 'a' can't come after 'b', b < a
+	if slices.Contains(r.exclusions[a], b) {
+		return 1
+	}
+
+	// if 'b' can't come after 'b', b < a
+	if slices.Contains(r.exclusions[b], a) {
+		return -1
+	}
+
+	return 0
+}
+
+// TODO: improve parsing...
 
 func ParseInput(in io.ReadCloser) (Rules, []Update, error) {
 	rules := Rules{exclusions: map[int][]int{}}

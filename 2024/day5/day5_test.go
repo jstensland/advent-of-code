@@ -57,5 +57,16 @@ func TestRunPart1(t *testing.T) {
 	total, err := day5.RunPart1(in)
 
 	require.NoError(t, err)
-	assert.Equal(t, 7074, total)
+	assert.Equal(t, 7074, total) // confired
+}
+
+func TestRunPart2(t *testing.T) {
+	inFile := "./input.txt"
+	in, err := os.Open(inFile)
+	require.NoError(t, err)
+
+	total, err := day5.RunPart2(in)
+
+	require.NoError(t, err)
+	assert.Equal(t, 4828, total) // confirmed
 }
