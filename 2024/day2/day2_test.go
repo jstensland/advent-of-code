@@ -21,7 +21,7 @@ func TestRunPart2(t *testing.T) {
 	answer, err := day2.RunPart2("./input.txt")
 
 	assert.NoError(t, err)
-	assert.Equal(t, 324, answer)
+	assert.Equal(t, 324, answer) // confirmed
 }
 
 func TestInstructionsPart2(t *testing.T) {
@@ -66,6 +66,7 @@ func TestInstructionsPart2BadFirst(t *testing.T) {
 		{raw: `10 5 11 12 13`, result: true},
 	}
 
+	// TODO: these cases should have names, and should be run with t.Run for better output
 	for _, tc := range testCases {
 		in := io.NopCloser(bytes.NewBuffer([]byte(tc.raw)))
 
@@ -99,24 +100,14 @@ func TestPossibleFixes(t *testing.T) {
 	}
 
 	for _, tc := range testCases {
-		// count := 0
 		rep, err := day2.ParseReport(tc.raw)
 		require.NoError(t, err)
 
 		alts := [][]int{}
 		for opt := range rep.PossibleFixes(tc.idx) {
-			// fmt.Println("test output:", opt.Levels())
 			assert.Contains(t, tc.alts, opt.Levels(), "possible fix %v not in expected %v", opt, tc.alts)
-			// count++
 			alts = append(alts, opt.Levels())
 		}
-		// sort.Sort(tc.alts)
 		assert.Equal(t, tc.alts, alts, "did not get expected set of alternates to test")
-		// assert.Equal(t, len(tc.alts), count, "did not get the expected number of possibilities")
 	}
 }
-
-// TODO: try a brute force approach
-
-// TODO: try a brute force approach
-//
