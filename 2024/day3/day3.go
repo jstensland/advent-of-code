@@ -118,11 +118,14 @@ func ParseLine(in string) ([]Op, error) {
 	return out, nil
 }
 
+// TODO: reduce need for those prints by breaking up seekOp
+// into more testable parts
+
 // seekOp finds the next op and returns it. If no op is found
 // ok is false, and op value should be discarded.
 func (p *opParser) seekOp() (Op, bool) {
 	// read down the line from the current position until you find 'mul('
-	fmt.Println("searching for mul in", p.src[p.pos:])
+	// fmt.Println("searching for mul in", p.src[p.pos:])
 	toNextMul := strings.Index(p.src[p.pos:], "mul(")
 	if toNextMul < 0 {
 		// no ops left
@@ -131,26 +134,26 @@ func (p *opParser) seekOp() (Op, bool) {
 	}
 
 	mulIdx := p.pos + toNextMul
-	fmt.Println("mul( index", mulIdx)
+	// fmt.Println("mul( index", mulIdx)
 
 	// increment the position until after this `mul(`
 	p.pos = mulIdx + len("mul(")
-	fmt.Println("new position", p.pos)
+	// fmt.Println("new position", p.pos)
 
 	// search for the next comma
 	commaIdx := p.pos + strings.Index(p.src[p.pos:], ",")
-	fmt.Println("comma index", commaIdx)
+	// fmt.Println("comma index", commaIdx)
 	leftVal, err := strconv.Atoi(p.src[p.pos:commaIdx])
 	if err != nil {
 		return p.seekOp() // try again
 	}
-	fmt.Println("left value", leftVal)
+	// fmt.Println("left value", leftVal)
 
 	// search for the next `)`
 	endParenIdx := p.pos + // current seeking position after mul(
 		(commaIdx - p.pos) + // length of first and a comma
 		strings.Index(p.src[commaIdx:], ")") // distance to the end paren
-	fmt.Println("end paren index", endParenIdx)
+	// fmt.Println("end paren index", endParenIdx)
 
 	// try to convert right value
 	rightVal, err := strconv.Atoi(p.src[commaIdx+1 : endParenIdx])
@@ -183,20 +186,20 @@ func (p *opParser2) ParseLine(in string) ([]Op, error) {
 			out = append(out, op)
 		}
 	}
-	fmt.Println("line:", in, "made ops:", out)
+	// fmt.Println("line:", in, "made ops:", out)
 	return out, nil
 }
 
 // seekOp finds the next op and returns it. If no op is found
 // ok is false, and op value should be discarded.
 func (p *opParser2) seekOp2() (Op, bool) {
-	fmt.Println("start seekOp2")
+	// fmt.Println("start seekOp2")
 
 	if !p.active {
 		// progress to the next do()
-		fmt.Println("searching for do() in", p.line[p.pos:])
+		// fmt.Println("searching for do() in", p.line[p.pos:])
 		toNextDo := strings.Index(p.line[p.pos:], "do()") // find the next do
-		fmt.Println("toNextDo is:", toNextDo)
+		// fmt.Println("toNextDo is:", toNextDo)
 		if toNextDo < 0 {
 			// no do() left on the line. keep inactive state and go to the next one
 			p.done = true
@@ -208,14 +211,14 @@ func (p *opParser2) seekOp2() (Op, bool) {
 	// always active below here
 
 	// search for the next `don't()`
-	fmt.Println("searching for don't() in", p.line[p.pos:])
+	// fmt.Println("searching for don't() in", p.line[p.pos:])
 	toNextDont := strings.Index(p.line[p.pos:], "don't()")
-	fmt.Println("toNextDont is:", toNextDont)
+	// fmt.Println("toNextDont is:", toNextDont)
 
 	// read down the line from the current position until you find 'mul('
-	fmt.Println("searching for mul in", p.line[p.pos:])
+	// fmt.Println("searching for mul in", p.line[p.pos:])
 	toNextMul := strings.Index(p.line[p.pos:], "mul(")
-	fmt.Println("toNextMul is:", toNextMul)
+	// fmt.Println("toNextMul is:", toNextMul)
 	if toNextMul < 0 && toNextDont < 0 {
 		// no more mul or don't, and we're already active. go to the next line
 		p.done = true
@@ -237,26 +240,26 @@ func (p *opParser2) seekOp2() (Op, bool) {
 	}
 
 	mulIdx := p.pos + toNextMul
-	fmt.Println("mul( index", mulIdx)
+	// fmt.Println("mul( index", mulIdx)
 
 	// increment the position until after this `mul(`
 	p.pos = mulIdx + len("mul(")
-	fmt.Println("new position", p.pos)
+	// fmt.Println("new position", p.pos)
 
 	// search for the next comma
 	commaIdx := p.pos + strings.Index(p.line[p.pos:], ",")
-	fmt.Println("comma index", commaIdx)
+	// fmt.Println("comma index", commaIdx)
 	leftVal, err := strconv.Atoi(p.line[p.pos:commaIdx])
 	if err != nil {
 		return p.seekOp2() // try again
 	}
-	fmt.Println("left value", leftVal)
+	// fmt.Println("left value", leftVal)
 
 	// search for the next `)`
 	endParenIdx := p.pos + // current seeking position after mul(
 		(commaIdx - p.pos) + // length of first and a comma
 		strings.Index(p.line[commaIdx:], ")") // distance to the end paren
-	fmt.Println("end paren index", endParenIdx)
+	// fmt.Println("end paren index", endParenIdx)
 
 	// try to convert right value
 	rightVal, err := strconv.Atoi(p.line[commaIdx+1 : endParenIdx])

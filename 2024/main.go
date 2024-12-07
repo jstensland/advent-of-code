@@ -32,9 +32,8 @@ func main() {
 	// }
 	// fmt.Println(answer)
 
-	// Day 3
-	// runDay3()
-	// runDay4()
+	runDay3()
+	runDay4()
 	runDay5()
 }
 
@@ -49,7 +48,7 @@ func runDay3() {
 	if err != nil {
 		log.Fatal(err)
 	}
-	fmt.Println("Day 3: part 1", answer)
+	fmt.Println("Day 3 part 1:", answer)
 
 	inFile = "./day3/input.txt"
 	in, err = os.Open(inFile)

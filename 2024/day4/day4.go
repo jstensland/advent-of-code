@@ -85,6 +85,9 @@ func (g Grid) XmasCount() int {
 	return count
 }
 
+// TODO: write specific tests for each to avoid print statement visual parsing
+// for issues
+
 func (g Grid) checkPosition(loc position) int {
 	// Check if it's an X. If not, continue.
 	if g.data[loc.row][loc.col] != 'X' {
@@ -93,35 +96,35 @@ func (g Grid) checkPosition(loc position) int {
 
 	total := 0
 	if g.checkUp(loc) {
-		fmt.Println("matches up:", loc)
+		// fmt.Println("matches up:", loc)
 		total++
 	}
 	if g.checkRightUp(loc) {
-		fmt.Println("matches right up:", loc)
+		// fmt.Println("matches right up:", loc)
 		total++
 	}
 	if g.checkRight(loc) {
-		fmt.Println("matches right:", loc)
+		// fmt.Println("matches right:", loc)
 		total++
 	}
 	if g.checkRightDown(loc) {
-		fmt.Println("matches right down:", loc)
+		// fmt.Println("matches right down:", loc)
 		total++
 	}
 	if g.checkDown(loc) {
-		fmt.Println("matches down:", loc)
+		// fmt.Println("matches down:", loc)
 		total++
 	}
 	if g.checkLeftDown(loc) {
-		fmt.Println("matches left down:", loc)
+		// fmt.Println("matches left down:", loc)
 		total++
 	}
 	if g.checkLeft(loc) {
-		fmt.Println("matches left:", loc)
+		// fmt.Println("matches left:", loc)
 		total++
 	}
 	if g.checkLeftUp(loc) {
-		fmt.Println("matches left up:", loc)
+		// fmt.Println("matches left up:", loc)
 		total++
 	}
 	return total
@@ -225,7 +228,6 @@ func (g Grid) checkPosition2(loc position) int {
 	if loc.col == 0 || loc.row == 0 || loc.col == g.width-1 || loc.row == g.height-1 {
 		return 0
 	}
-	fmt.Println("found an A not on the boarder at:", loc)
 
 	// There are 4 orientations, which are all rotations
 	// each A either is or is not a an XMAS
