@@ -1,0 +1,97 @@
+package day5
+
+import (
+	"bufio"
+	"fmt"
+	"io"
+	"slices"
+	"strconv"
+	"strings"
+)
+
+func RunPart1(in io.ReadCloser) (int, error) {
+	rules, updates, err := ParseInput(in)
+	if err != nil {
+		return 0, fmt.Errorf("error parsing input file: %w", err)
+	}
+
+	total := 0
+	for _, update := range updates {
+		if rules.Check(update) {
+			total += update.Middle()
+		}
+	}
+	return total, nil
+}
+
+type Rules struct {
+	// map of pages, to other pages that cannot come after
+	exclusions map[int][]int
+}
+
+type Update []int
+
+func (up Update) Middle() int {
+	return up[len(up)/2]
+}
+
+func (r Rules) Check(up Update) bool {
+	notLater := []int{}
+	for _, page := range up {
+		if slices.Contains(notLater, page) {
+			return false
+		}
+		notLater = append(notLater, r.exclusions[page]...)
+	}
+	return true
+}
+
+func ParseInput(in io.ReadCloser) (Rules, []Update, error) {
+	rules := Rules{exclusions: map[int][]int{}}
+	updates := []Update{}
+
+	defer in.Close()
+	scanner := bufio.NewScanner(in)
+	for scanner.Scan() {
+		line := scanner.Text()
+		if strings.Contains(line, "|") {
+			// parse as a rule
+			rawRule := strings.Split(line, "|")
+			beforePage, err := strconv.Atoi(rawRule[0])
+			if err != nil {
+				return Rules{}, nil, fmt.Errorf("error parsing before page: %w", err)
+			}
+			afterPage, err := strconv.Atoi(rawRule[1])
+			if err != nil {
+				return Rules{}, nil, fmt.Errorf("error parsing after page: %w", err)
+			}
+			// check this number has been seen
+			if _, ok := rules.exclusions[afterPage]; !ok {
+				rules.exclusions[afterPage] = []int{}
+			}
+			rules.exclusions[afterPage] = append(rules.exclusions[afterPage], beforePage)
+
+		} else if strings.Contains(line, ",") {
+			update, err := parseUpdate(line)
+			if err != nil {
+				return Rules{}, nil, fmt.Errorf("error parsing update: %w", err)
+			}
+			updates = append(updates, update)
+		}
+	}
+
+	return rules, updates, nil
+}
+
+func parseUpdate(in string) (Update, error) {
+	rawUpdate := strings.Split(in, ",")
+	out := Update{}
+	for _, val := range rawUpdate {
+		num, err := strconv.Atoi(val)
+		if err != nil {
+			return Update{}, fmt.Errorf("error parsing update number: %w", err)
+		}
+		out = append(out, num)
+	}
+	return out, nil
+}
