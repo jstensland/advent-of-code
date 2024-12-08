@@ -8,29 +8,7 @@ import (
 	"iter"
 	"strconv"
 	"strings"
-
-	"github.com/jstensland/advent-of-code/2024/runner"
 )
-
-func Run(inFile string) error {
-	in := runner.Reader(inFile)
-	defer in.Close() //nolint:errcheck // no need to check for error
-
-	answer, err := SolvePart1(in)
-	if err != nil {
-		return err
-	}
-	fmt.Println("Day 7 part 1:", answer) //nolint:forbidigo // no IO CLI yet
-
-	in2 := runner.Reader(inFile)
-	defer in2.Close() //nolint:errcheck // no need to check for error
-	answer, err = SolvePart2(in2)
-	if err != nil {
-		return err
-	}
-	fmt.Println("Day 7 part 2:", answer) //nolint:forbidigo // no IO CLI yet
-	return nil
-}
 
 func SolvePart1(in io.Reader) (int, error) {
 	eqs, err := ParseInput(in)
@@ -105,15 +83,15 @@ func Concat(left, right int) int {
 // Each must be added here. It is not needed for anything other than printing
 // and op function comparison.
 //
-// TODO: refactor my BinaryOp to a struct type with a Name field for comparisons
+// IMPROVEMENT: refactor my BinaryOp to a struct type with a Name field for comparisons
 func (op BinaryOp) String() string {
-	if op(1, 1) == 2 {
+	if op(1, 1) == 2 { //nolint:mnd // a little magic
 		return "+"
 	}
 	if op(1, 1) == 1 {
 		return "*"
 	}
-	if op(1, 1) == 11 {
+	if op(1, 1) == 11 { //nolint:mnd // a little magic
 		return "||"
 	}
 

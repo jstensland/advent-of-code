@@ -2,7 +2,6 @@ package day2_test
 
 import (
 	"bytes"
-	"io"
 	"testing"
 
 	"github.com/stretchr/testify/assert"
@@ -13,7 +12,7 @@ import (
 )
 
 func TestRunPart1(t *testing.T) {
-	// TODO: improve runner.Reader or add another option... shouldn't log fatal in tests
+	// IMPROVEMENT: improve runner.Reader or add another option... shouldn't log fatal in tests
 	answer, err := day2.SolvePart1(runner.Reader("./input.txt"))
 
 	require.NoError(t, err)
@@ -35,7 +34,7 @@ func TestInstructionsPart2(t *testing.T) {
 8 6 4 4 1
 1 3 6 7 9
 `)
-	in := io.NopCloser(bytes.NewBuffer(data))
+	in := bytes.NewBuffer(data)
 
 	answer, err := day2.SolvePart2(in)
 
@@ -69,19 +68,18 @@ func TestInstructionsPart2BadFirst(t *testing.T) {
 		{raw: `10 5 11 12 13`, result: true},
 	}
 
-	// TODO: these cases should have names, and should be run with t.Run for better output
+	// IMPROVEMENT: these cases should have names, and should be run with t.Run for better output
 	for _, tc := range testCases {
-		in := io.NopCloser(bytes.NewBuffer([]byte(tc.raw)))
+		in := bytes.NewBufferString(tc.raw)
 
 		answer, err := day2.SolvePart2(in)
 
-		assert.NoError(t, err)
+		require.NoError(t, err)
 		if tc.result {
 			assert.Equal(t, 1, answer) // confirmed
 		} else {
 			assert.Equal(t, 0, answer) // confirmed
 		}
-
 	}
 }
 

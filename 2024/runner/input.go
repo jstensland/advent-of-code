@@ -1,8 +1,6 @@
-// Package runner has utilities for handling input files and day runs.
 package runner
 
 import (
-	"fmt"
 	"io"
 	"log"
 	"os"
@@ -18,19 +16,5 @@ func Reader(inFile string) io.ReadCloser {
 	return in
 }
 
-// TODO: add a function that Reads all for use with parsers that need
+// IMPROVEMENT: add a function that Reads all for use with parsers that need
 // the full file anyways
-
-type Solver func(io.Reader) (int, error)
-
-func RunIt(name string, fn Solver, inFile string) error {
-	in := Reader(inFile)
-	defer in.Close() //nolint:errcheck // no need to check for error
-
-	answer, err := fn(in)
-	if err != nil {
-		return err
-	}
-	fmt.Printf("%s: %v\n", name, answer) //nolint:forbidigo // no IO CLI yet
-	return nil
-}

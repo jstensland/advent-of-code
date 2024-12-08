@@ -27,6 +27,8 @@ For development, it's usually most helpful to work via tests for the given day.
 ## TODO
 
 - [ ] add basic build GHA
-- [ ] fix up running for days 1 and 2, including a test for day 1
-- [ ] add golangci-lint configuration
-- [ ] There are many TODOs in the code 🤷‍♂️
+- [x] fix up running for days 1 and 2
+- [ ] add day 1 tests
+- [x] add golangci-lint configuration
+
+There are many "IMPROVEMENT" statements, that I don't currently plan to come back to 🤷‍♂️

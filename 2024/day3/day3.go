@@ -1,13 +1,12 @@
+// Package day3 contains the solution to the Advent of Code 2024 Day 3 puzzle.
 package day3
 
 import (
 	"bufio"
-	"fmt"
 	"io"
 	"log"
 	"strconv"
 	"strings"
-	"text/scanner"
 )
 
 type Op struct {
@@ -73,28 +72,16 @@ func ParseOps2(in io.Reader) []Op {
 	return out
 }
 
-func ParseOps3(in io.Reader) ([]Op, error) {
-	// try using a scanner https://pkg.go.dev/text/scanner@go1.23.4
-	// and checking tokens....
-	//
-	var s scanner.Scanner
-	s.Init(in)
-	for tok := s.Scan(); tok != scanner.EOF; tok = s.Scan() {
-		fmt.Printf("%s: %s\n", s.Position, s.TokenText())
-	}
-	return nil, nil
-}
-
-type opParser struct {
+type OpParser struct {
 	src    string
 	pos    int
 	done   bool
 	active bool
 }
 
-func (p opParser) Done() bool { return p.done }
+func (p *OpParser) Done() bool { return p.done }
 
-func NewParser(in string) *opParser { return &opParser{src: in, active: true} }
+func NewParser(in string) *OpParser { return &OpParser{src: in, active: true} }
 
 func ParseLine(in string) ([]Op, error) {
 	parser := NewParser(in)
@@ -108,12 +95,12 @@ func ParseLine(in string) ([]Op, error) {
 	return out, nil
 }
 
-// TODO: reduce need for those prints by breaking up seekOp
+// IMPROVEMENT: reduce need for those prints by breaking up seekOp
 // into more testable parts
 
 // seekOp finds the next op and returns it. If no op is found
 // ok is false, and op value should be discarded.
-func (p *opParser) seekOp() (Op, bool) {
+func (p *OpParser) seekOp() (Op, bool) {
 	// read down the line from the current position until you find 'mul('
 	// fmt.Println("searching for mul in", p.src[p.pos:])
 	toNextMul := strings.Index(p.src[p.pos:], "mul(")
@@ -154,18 +141,20 @@ func (p *opParser) seekOp() (Op, bool) {
 	return Op{Left: leftVal, Right: rightVal}, true
 }
 
-type opParser2 struct {
+// IMPROVEMENT: consolidate with OpParser
+
+type OpParser2 struct {
 	line   string
 	pos    int
 	done   bool
 	active bool
 }
 
-func NewParser2() *opParser2 { return &opParser2{active: true} }
+func NewParser2() *OpParser2 { return &OpParser2{active: true} }
 
-func (p opParser2) Done() bool { return p.done }
+func (p *OpParser2) Done() bool { return p.done }
 
-func (p *opParser2) ParseLine(in string) ([]Op, error) {
+func (p *OpParser2) ParseLine(in string) ([]Op, error) {
 	p.line = in    // new line
 	p.pos = 0      // start at the beginning
 	p.done = false // not done before we start!
@@ -182,7 +171,7 @@ func (p *opParser2) ParseLine(in string) ([]Op, error) {
 
 // seekOp finds the next op and returns it. If no op is found
 // ok is false, and op value should be discarded.
-func (p *opParser2) seekOp2() (Op, bool) {
+func (p *OpParser2) seekOp2() (Op, bool) {
 	// fmt.Println("start seekOp2")
 
 	if !p.active {
@@ -195,7 +184,7 @@ func (p *opParser2) seekOp2() (Op, bool) {
 			p.done = true
 			return Op{}, false
 		}
-		p.pos = p.pos + toNextDo
+		p.pos += toNextDo
 		p.active = true
 	}
 	// always active below here

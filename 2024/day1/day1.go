@@ -45,7 +45,7 @@ func newList() *list {
 	}
 }
 
-func (l list) sort() {
+func (l *list) sort() {
 	slices.Sort(l.list)
 }
 
@@ -57,7 +57,7 @@ func (l *list) insert(val int) {
 	l.freqMap[val]++
 }
 
-func (l list) distance(other *list) int {
+func (l *list) distance(other *list) int {
 	distance := 0
 	for idx, val := range l.list {
 		distance += abs(val - other.list[idx])
@@ -72,7 +72,7 @@ func abs(x int) int {
 	return x
 }
 
-func (l list) freqDistance(other *list) int {
+func (l *list) freqDistance(other *list) int {
 	total := 0
 	for _, val := range l.list {
 		lFreq, ok := l.freqMap[val]

@@ -1,3 +1,4 @@
+// Package day5 solves AoC 2024 day 5.
 package day5
 
 import (
@@ -7,26 +8,7 @@ import (
 	"slices"
 	"strconv"
 	"strings"
-
-	"github.com/jstensland/advent-of-code/2024/runner"
 )
-
-func Run(inFile string) error {
-	in := runner.Reader(inFile)
-	defer in.Close()
-	answer, err := SolvePart1(in) //nolint:forbidigo // no IO CLI yet
-	if err != nil {
-		return err
-	}
-	fmt.Println("Day 5 part 1:", answer)
-
-	answer, err = SolvePart2(runner.Reader(inFile))
-	if err != nil {
-		return err
-	}
-	fmt.Println("Day 5 part 2:", answer)
-	return nil
-}
 
 func SolvePart1(in io.Reader) (int, error) {
 	rules, updates, err := ParseInput(in)
@@ -103,8 +85,12 @@ func (r Rules) SortFunc(a, b int) int {
 	return 0
 }
 
-// TODO: improve parsing...
-
+// ParseInput parsed the input into rules and updates
+//
+// IMPROVEMENT: improve parsing by splitting the input into two parts first
+// then consider csv parsers
+//
+//nolint:nestif // needs improvement
 func ParseInput(in io.Reader) (Rules, []Update, error) {
 	rules := Rules{exclusions: map[int][]int{}}
 	updates := []Update{}
@@ -128,7 +114,6 @@ func ParseInput(in io.Reader) (Rules, []Update, error) {
 				rules.exclusions[afterPage] = []int{}
 			}
 			rules.exclusions[afterPage] = append(rules.exclusions[afterPage], beforePage)
-
 		} else if strings.Contains(line, ",") {
 			update, err := parseUpdate(line)
 			if err != nil {

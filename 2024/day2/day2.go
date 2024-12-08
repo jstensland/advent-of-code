@@ -1,3 +1,4 @@
+// Package day2 provides the solution to Advent of Code 2024, day 2.
 package day2
 
 import (
@@ -103,7 +104,7 @@ func (r Report) SafeDampened() bool {
 	return safe
 }
 
-// PossibleFixes recieves the index where the first non-conforming value is for the
+// PossibleFixes receives the index where the first non-conforming value is for the
 // repot, and returns possible deletions
 //
 // INFO: Results are not always unique. Could keep track of what has been returned and
@@ -132,7 +133,7 @@ func (r Report) PossibleFixes(problemIdx int) iter.Seq[Report] {
 		// 10 5 11 12 13
 		// For these cases, elminating the first or second might help
 		if problemIdx == 1 || problemIdx == 2 {
-			for i := 0; i < 2; i++ {
+			for i := range 2 {
 				original := slices.Clone(r.levels)
 				// delete the first? use i
 				newLevels := slices.Delete(original, problemIdx+i-1, problemIdx+i)
@@ -148,9 +149,9 @@ func (r Report) PossibleFixes(problemIdx int) iter.Seq[Report] {
 		// 1 2 3 3 4 5 // delete the problemIdx or the problemIdx - 1
 		// 1 3 5 7 9 8 // delete the problemIdx
 		// 1 3 5 4 5 7 // must delete the problemIdx - 1
-		if problemIdx > 2 {
+		if problemIdx > 2 { //nolint:mnd // number is algorithm related. not magic
 			// offer the deltion othe the problemidx or th eone before it
-			for i := 0; i < 2; i++ { // 0, 1
+			for i := range 2 {
 				original := slices.Clone(r.levels)
 				newLevels := slices.Delete(original, problemIdx+i-1, problemIdx+i)
 				// fmt.Println(newLevels)
@@ -182,7 +183,6 @@ func loadReports(in io.Reader) ([]Report, error) {
 			return nil, fmt.Errorf("failed to parse report: %w", err)
 		}
 		out = append(out, rep)
-
 	}
 	if err := scanner.Err(); err != nil {
 		return nil, fmt.Errorf("failed to read reports: %w", err)

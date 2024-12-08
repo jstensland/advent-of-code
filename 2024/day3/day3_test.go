@@ -1,6 +1,7 @@
 package day3_test
 
 import (
+	"errors"
 	"os"
 	"strings"
 	"testing"
@@ -18,7 +19,7 @@ func TestPart1(t *testing.T) {
 
 	answer, err := day3.SolvePart1(in)
 
-	assert.NoError(t, err)
+	require.NoError(t, err)
 	assert.Equal(t, 175700056, answer) // confirmed
 }
 
@@ -29,7 +30,7 @@ func TestPart2(t *testing.T) {
 
 	answer, err := day3.SolvePart2(in)
 
-	assert.NoError(t, err)
+	require.NoError(t, err)
 	// 102785526 // wrong answer when not taking into accoutn new line
 	assert.Equal(t, 71668682, answer) //  X
 }
@@ -70,7 +71,7 @@ func TestParseLine(t *testing.T) {
 	for _, tc := range testCases {
 		t.Run(tc.name, func(t *testing.T) {
 			ops, err := day3.ParseLine(tc.line)
-			if err != tc.err {
+			if !errors.Is(err, tc.err) {
 				t.Fatalf("expected error %v, got %v", tc.err, err)
 			}
 			if len(ops) != len(tc.want) {
@@ -134,7 +135,7 @@ func TestParseLine2(t *testing.T) {
 		t.Run(tc.name, func(t *testing.T) {
 			parser := day3.NewParser2()
 			ops, err := parser.ParseLine(tc.line)
-			if err != tc.err {
+			if !errors.Is(err, tc.err) {
 				t.Fatalf("expected error %v, got %v", tc.err, err)
 			}
 			if len(ops) != len(tc.want) {

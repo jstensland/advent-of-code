@@ -5,30 +5,7 @@ import (
 	"fmt"
 	"io"
 	"sync"
-
-	"github.com/jstensland/advent-of-code/2024/runner"
 )
-
-func Run(inFile string) error {
-	in := runner.Reader(inFile)
-	defer in.Close() //nolint:errcheck // no need to check for error
-	answer, err := SolvePart1(in)
-	if err != nil {
-		return err
-	}
-	fmt.Println("Day 6 part 1:", answer) //nolint:forbidigo // no IO CLI yet
-
-	// TOO SLOW
-	fmt.Println("Day 6 part 2:", "skipped") //nolint:forbidigo // no IO CLI yet
-	// in2 := runner.Reader(inFile)
-	// defer in2.Close()
-	// answer, err = SolvePart2(in2)
-	// if err != nil {
-	//   return err
-	// }
-	// fmt.Println("Day 6 part 2:", answer)
-	return nil
-}
 
 func SolvePart1(in io.Reader) (int, error) {
 	layout, err := ParseInput(in)
