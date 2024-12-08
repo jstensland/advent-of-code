@@ -1,0 +1,30 @@
+---
+name: build 2024
+
+on: [push]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Set up Go
+        uses: actions/setup-go@v5
+        with:
+          go-version-file: "./2024/go.mod"
+          check-latest: true
+
+      - name: install deps
+        run: |
+          curl -sSfL https://raw.githubusercontent.com/golangci/golangci-lint/master/install.sh | sh -s -- -b "$(go env GOPATH)/bin" "$GOLANGCI_LINT_VERSION"
+        env:
+          GOLANGCI_LINT_VERSION: latest # often will pin... last known good v1.62.2
+
+      - name: lint 2024
+        run: cd 2024 && golangci-lint run ./...
+
+      - name: test 2024
+        run: cd 2024 && go test ./...
