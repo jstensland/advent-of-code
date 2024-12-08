@@ -1,7 +1,6 @@
 package day7_test
 
 import (
-	"advent2024/day7"
 	"io"
 	"os"
 	"strings"
@@ -9,6 +8,8 @@ import (
 
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
+
+	"github.com/jstensland/advent-of-code/2024/day7"
 )
 
 func TestPart1Input(t *testing.T) {

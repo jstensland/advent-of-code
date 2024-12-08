@@ -1,4 +1,4 @@
-module advent2024
+module github.com/jstensland/advent-of-code/2024
 
 go 1.23.3
 

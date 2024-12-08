@@ -1,13 +1,14 @@
 package day2_test
 
 import (
-	"advent2024/day2"
 	"bytes"
 	"io"
 	"testing"
 
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
+
+	"github.com/jstensland/advent-of-code/2024/day2"
 )
 
 func TestRunPart1(t *testing.T) {

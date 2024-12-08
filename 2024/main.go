@@ -3,13 +3,14 @@
 package main
 
 import (
-	"advent2024/day3"
-	"advent2024/day4"
-	"advent2024/day5"
-	"advent2024/day7"
 	"fmt"
 	"log"
 	"os"
+
+	"github.com/jstensland/advent-of-code/2024/day3"
+	"github.com/jstensland/advent-of-code/2024/day4"
+	"github.com/jstensland/advent-of-code/2024/day5"
+	"github.com/jstensland/advent-of-code/2024/day7"
 )
 
 // TODO: create a runner package that's invoked from here
