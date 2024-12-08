@@ -6,6 +6,7 @@ import (
 	"advent2024/day3"
 	"advent2024/day4"
 	"advent2024/day5"
+	"advent2024/day7"
 	"fmt"
 	"log"
 	"os"
@@ -37,6 +38,14 @@ func main() {
 	runDay5()
 	// day6.Task1()
 	// day6.Task2()
+	err := day7.Part1("./day7/input.txt")
+	if err != nil {
+		log.Fatal(err)
+	}
+	err = day7.Part2("./day7/input.txt")
+	if err != nil {
+		log.Fatal(err)
+	}
 }
 
 func runDay3() {

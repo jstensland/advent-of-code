@@ -1,3 +1,4 @@
+// Package day6 solves AoC 2024 day 6.
 package day6
 
 import (
@@ -6,6 +7,7 @@ import (
 	"sync"
 )
 
+// RunPart1 solves part 1.
 func RunPart1(in io.Reader) (int, error) {
 	layout, err := ParseInput(in)
 	if err != nil {
@@ -17,6 +19,7 @@ func RunPart1(in io.Reader) (int, error) {
 	return layout.Count(), nil
 }
 
+// RunPart2 solves part 2.
 func RunPart2(in io.Reader) (int, error) {
 	layout, err := ParseInput(in)
 	if err != nil {

@@ -32,7 +32,7 @@ const (
 // Turn returns the orientation to the right of the given
 // Orientation
 func Turn(o Orientation) Orientation {
-	return Orientation((o + 1) % 4)
+	return (o + 1) % 4 //nolint:mnd // 4 is the number of Orientations
 }
 
 type Location struct {
@@ -148,8 +148,8 @@ func (l *Layout) Count() int {
 
 func (l *Layout) Locations() iter.Seq[Location] {
 	return func(yield func(l Location) bool) {
-		for row := 0; row < l.Height(); row++ {
-			for col := 0; col < l.Width(); col++ {
+		for row := range l.Height() {
+			for col := range l.Width() {
 				if !yield(Location{row, col}) {
 					return
 				}
@@ -170,7 +170,7 @@ func (l *Layout) Width() int {
 	return len(l.layout[0])
 }
 
-// ParseInput
+// ParseInput loads the initial layout.
 func ParseInput(in io.Reader) (*Layout, error) {
 	scanner := bufio.NewScanner(in)
 	var grid [][]CellStatus
