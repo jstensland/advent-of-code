@@ -35,6 +35,8 @@ func main() {
 	runDay3()
 	runDay4()
 	runDay5()
+	// day6.Task1()
+	// day6.Task2()
 }
 
 func runDay3() {
