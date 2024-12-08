@@ -17,7 +17,7 @@ func TestPart1Input(t *testing.T) {
 	in, err := os.Open(inFile)
 	require.NoError(t, err)
 
-	answer, err := day7.RunPart1(in)
+	answer, err := day7.SolvePart1(in)
 
 	require.NoError(t, err)
 	assert.Equal(t, 5837374519342, answer) //?
@@ -36,7 +36,7 @@ func exampleIn() io.Reader {
 }
 
 func TestPart1Example(t *testing.T) {
-	answer, err := day7.RunPart1(exampleIn())
+	answer, err := day7.SolvePart1(exampleIn())
 
 	require.NoError(t, err)
 	assert.Equal(t, 3749, answer)
@@ -47,7 +47,7 @@ func TestPart2Example(t *testing.T) {
 	in, err := os.Open(inFile)
 	require.NoError(t, err)
 
-	answer, err := day7.RunPart2(in)
+	answer, err := day7.SolvePart2(in)
 
 	require.NoError(t, err)
 	assert.Equal(t, 492383931650959, answer)

@@ -44,7 +44,7 @@ func exampleInput() io.ReadCloser {
 }
 
 func TestRunPart1Example(t *testing.T) {
-	total, err := day5.RunPart1(exampleInput())
+	total, err := day5.SolvePart1(exampleInput())
 
 	require.NoError(t, err)
 	assert.Equal(t, 143, total)
@@ -55,7 +55,7 @@ func TestRunPart1(t *testing.T) {
 	in, err := os.Open(inFile)
 	require.NoError(t, err)
 
-	total, err := day5.RunPart1(in)
+	total, err := day5.SolvePart1(in)
 
 	require.NoError(t, err)
 	assert.Equal(t, 7074, total) // confired
@@ -66,7 +66,7 @@ func TestRunPart2(t *testing.T) {
 	in, err := os.Open(inFile)
 	require.NoError(t, err)
 
-	total, err := day5.RunPart2(in)
+	total, err := day5.SolvePart2(in)
 
 	require.NoError(t, err)
 	assert.Equal(t, 4828, total) // confirmed

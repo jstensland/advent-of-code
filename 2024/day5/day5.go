@@ -7,9 +7,28 @@ import (
 	"slices"
 	"strconv"
 	"strings"
+
+	"github.com/jstensland/advent-of-code/2024/runner"
 )
 
-func RunPart1(in io.ReadCloser) (int, error) {
+func Run(inFile string) error {
+	in := runner.Reader(inFile)
+	defer in.Close()
+	answer, err := SolvePart1(in) //nolint:forbidigo // no IO CLI yet
+	if err != nil {
+		return err
+	}
+	fmt.Println("Day 5 part 1:", answer)
+
+	answer, err = SolvePart2(runner.Reader(inFile))
+	if err != nil {
+		return err
+	}
+	fmt.Println("Day 5 part 2:", answer)
+	return nil
+}
+
+func SolvePart1(in io.Reader) (int, error) {
 	rules, updates, err := ParseInput(in)
 	if err != nil {
 		return 0, fmt.Errorf("error parsing input file: %w", err)
@@ -24,7 +43,7 @@ func RunPart1(in io.ReadCloser) (int, error) {
 	return total, nil
 }
 
-func RunPart2(in io.ReadCloser) (int, error) {
+func SolvePart2(in io.Reader) (int, error) {
 	rules, updates, err := ParseInput(in)
 	if err != nil {
 		return 0, fmt.Errorf("error parsing input file: %w", err)
@@ -86,11 +105,10 @@ func (r Rules) SortFunc(a, b int) int {
 
 // TODO: improve parsing...
 
-func ParseInput(in io.ReadCloser) (Rules, []Update, error) {
+func ParseInput(in io.Reader) (Rules, []Update, error) {
 	rules := Rules{exclusions: map[int][]int{}}
 	updates := []Update{}
 
-	defer in.Close()
 	scanner := bufio.NewScanner(in)
 	for scanner.Scan() {
 		line := scanner.Text()

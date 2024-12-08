@@ -9,19 +9,21 @@ import (
 	"github.com/stretchr/testify/require"
 
 	"github.com/jstensland/advent-of-code/2024/day2"
+	"github.com/jstensland/advent-of-code/2024/runner"
 )
 
 func TestRunPart1(t *testing.T) {
-	answer, err := day2.RunPart1("./input.txt")
+	// TODO: improve runner.Reader or add another option... shouldn't log fatal in tests
+	answer, err := day2.SolvePart1(runner.Reader("./input.txt"))
 
-	assert.NoError(t, err)
+	require.NoError(t, err)
 	assert.Equal(t, 252, answer) // confirmed
 }
 
 func TestRunPart2(t *testing.T) {
-	answer, err := day2.RunPart2("./input.txt")
+	answer, err := day2.SolvePart2(runner.Reader("./input.txt"))
 
-	assert.NoError(t, err)
+	require.NoError(t, err)
 	assert.Equal(t, 324, answer) // confirmed
 }
 
@@ -35,9 +37,9 @@ func TestInstructionsPart2(t *testing.T) {
 `)
 	in := io.NopCloser(bytes.NewBuffer(data))
 
-	answer, err := day2.Part2Analysis(in)
+	answer, err := day2.SolvePart2(in)
 
-	assert.NoError(t, err)
+	require.NoError(t, err)
 	assert.Equal(t, 4, answer) // confirmed
 }
 
@@ -71,7 +73,7 @@ func TestInstructionsPart2BadFirst(t *testing.T) {
 	for _, tc := range testCases {
 		in := io.NopCloser(bytes.NewBuffer([]byte(tc.raw)))
 
-		answer, err := day2.Part2Analysis(in)
+		answer, err := day2.SolvePart2(in)
 
 		assert.NoError(t, err)
 		if tc.result {

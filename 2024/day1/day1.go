@@ -6,45 +6,32 @@ import (
 	"fmt"
 	"io"
 	"log"
-	"os"
 	"slices"
 	"strconv"
 	"strings"
 )
 
-// RunPart1 sorts both lists and calculate the distance between each
+// SolvePart1 sorts both lists and calculate the distance between each
 // corresponding pairs between the lists
-func RunPart1(inFile string) int {
-	reader, err := os.Open(inFile)
-	if err != nil {
-		log.Fatalf("failed to read file %s: %s", inFile, err)
-	}
-	defer reader.Close()
-
-	left, right, err := loadInput(reader)
+func SolvePart1(in io.Reader) (int, error) {
+	left, right, err := loadInput(in)
 	if err != nil {
 		log.Fatalf("Error reading input: %s", err)
 	}
 	left.sort()
 	right.sort()
 
-	return left.distance(right)
+	return left.distance(right), nil
 }
 
-// RunPart2 loads the lists and calculates the frequency distance between the lists
-func RunPart2(inFile string) int {
-	reader, err := os.Open(inFile)
-	if err != nil {
-		log.Fatalf("failed to read file %s: %s", inFile, err)
-	}
-	defer reader.Close()
-
-	left, right, err := loadInput(reader)
+// SolvePart2 loads the lists and calculates the frequency distance between the lists
+func SolvePart2(in io.Reader) (int, error) {
+	left, right, err := loadInput(in)
 	if err != nil {
 		log.Fatalf("Error reading input: %s", err)
 	}
 
-	return left.freqDistance(right)
+	return left.freqDistance(right), nil
 }
 
 type list struct {

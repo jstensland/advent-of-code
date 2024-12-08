@@ -6,27 +6,33 @@ import (
 	"fmt"
 	"io"
 	"iter"
-	"log"
-	"os"
 	"strconv"
 	"strings"
+
+	"github.com/jstensland/advent-of-code/2024/runner"
 )
 
-func Part1(inFile string) error {
-	// inFile := "./input.txt"
-	in, err := os.Open(inFile)
+func Run(inFile string) error {
+	in := runner.Reader(inFile)
+	defer in.Close() //nolint:errcheck // no need to check for error
+
+	answer, err := SolvePart1(in)
 	if err != nil {
-		return fmt.Errorf("failed to open file %s: %w", inFile, err)
+		return err
 	}
-	answer, err := RunPart1(in)
+	fmt.Println("Day 7 part 1:", answer) //nolint:forbidigo // no IO CLI yet
+
+	in2 := runner.Reader(inFile)
+	defer in2.Close() //nolint:errcheck // no need to check for error
+	answer, err = SolvePart2(in2)
 	if err != nil {
-		log.Fatal(err)
+		return err
 	}
-	fmt.Println("Day 7 part 1:", answer)
+	fmt.Println("Day 7 part 2:", answer) //nolint:forbidigo // no IO CLI yet
 	return nil
 }
 
-func RunPart1(in io.Reader) (int, error) {
+func SolvePart1(in io.Reader) (int, error) {
 	eqs, err := ParseInput(in)
 	if err != nil {
 		return 0, fmt.Errorf("error parsing input file: %w", err)
@@ -42,21 +48,7 @@ func RunPart1(in io.Reader) (int, error) {
 	return total, nil
 }
 
-func Part2(inFile string) error {
-	// inFile := "./input.txt"
-	in, err := os.Open(inFile)
-	if err != nil {
-		return fmt.Errorf("failed to open file %s: %w", inFile, err)
-	}
-	answer, err := RunPart2(in)
-	if err != nil {
-		log.Fatal(err)
-	}
-	fmt.Println("Day 7 part 2:", answer)
-	return nil
-}
-
-func RunPart2(in io.Reader) (int, error) {
+func SolvePart2(in io.Reader) (int, error) {
 	eqs, err := ParseInput(in)
 	if err != nil {
 		return 0, fmt.Errorf("error parsing input file: %w", err)

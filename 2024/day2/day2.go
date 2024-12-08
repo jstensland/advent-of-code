@@ -6,7 +6,6 @@ import (
 	"fmt"
 	"io"
 	"iter"
-	"os"
 	"slices"
 	"strconv"
 	"strings"
@@ -14,21 +13,12 @@ import (
 
 var ErrEmptyReport = errors.New("error empty report")
 
-func RunPart1(inFile string) (int, error) {
-	reader, err := os.Open(inFile)
-	if err != nil {
-		return 0, fmt.Errorf("failed to open file %s: %w", inFile, err)
-	}
-	return Part1Analysis(reader)
-}
-
-func Part1Analysis(in io.ReadCloser) (int, error) {
+func SolvePart1(in io.Reader) (int, error) {
 	safeCount := 0
 	reports, err := loadReports(in)
 	if err != nil {
 		return 0, fmt.Errorf("failed to load reports: %w", err)
 	}
-	defer in.Close()
 
 	for _, report := range reports {
 		if report.Safe() {
@@ -38,21 +28,12 @@ func Part1Analysis(in io.ReadCloser) (int, error) {
 	return safeCount, nil
 }
 
-func RunPart2(inFile string) (int, error) {
-	reader, err := os.Open(inFile)
-	if err != nil {
-		return 0, fmt.Errorf("failed to open file %s: %w", inFile, err)
-	}
-	return Part2Analysis(reader)
-}
-
-func Part2Analysis(in io.ReadCloser) (int, error) {
+func SolvePart2(in io.Reader) (int, error) {
 	safeCount := 0
 	reports, err := loadReports(in)
 	if err != nil {
 		return 0, fmt.Errorf("failed to load reports: %w", err)
 	}
-	defer in.Close()
 
 	for _, report := range reports {
 		if report.SafeDampened() {

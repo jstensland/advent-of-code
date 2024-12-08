@@ -16,27 +16,22 @@ type Op struct {
 	// op string // always multiple for now
 }
 
-func RunPart1(in io.ReadCloser) (int, error) {
-	// parse valid multiples
-	ops := ParseOps(in)
-	defer in.Close()
-
-	return Compute(ops), nil
+func SolvePart1(in io.Reader) (int, error) {
+	return Compute(ParseOps(in)), nil
 }
 
 // ParseOps reads in the lines and parses each one, collecting operations
 func ParseOps(in io.Reader) []Op {
-	scanner := bufio.NewScanner(in)
+	inScanner := bufio.NewScanner(in)
 	out := []Op{}
-	for scanner.Scan() {
-		ops, err := ParseLine(scanner.Text())
+	for inScanner.Scan() {
+		ops, err := ParseLine(inScanner.Text())
 		if err != nil {
 			log.Printf("error parsiing line: %v", err)
 		}
 		out = append(out, ops...)
-
 	}
-	if err := scanner.Err(); err != nil {
+	if err := inScanner.Err(); err != nil {
 		log.Printf("error while scanning: %v", err)
 		return nil
 	}
@@ -44,12 +39,8 @@ func ParseOps(in io.Reader) []Op {
 	return out
 }
 
-func RunPart2(in io.ReadCloser) (int, error) {
-	// parse valid multiples
-	ops := ParseOps2(in)
-	defer in.Close()
-
-	return Compute(ops), nil
+func SolvePart2(in io.Reader) (int, error) {
+	return Compute(ParseOps2(in)), nil
 }
 
 func Compute(ops []Op) int {
@@ -60,22 +51,21 @@ func Compute(ops []Op) int {
 	return total
 }
 
-// ParseOps reads in the lines and parses each one, collecting operations
+// ParseOps2 reads in the lines and parses each one, collecting operations
 func ParseOps2(in io.Reader) []Op {
-	scanner := bufio.NewScanner(in)
+	inScanner := bufio.NewScanner(in)
 	out := []Op{}
 	// create parser out here so state can be maintened between lines
 	parser := NewParser2()
 
-	for scanner.Scan() {
-		ops, err := parser.ParseLine(scanner.Text())
+	for inScanner.Scan() {
+		ops, err := parser.ParseLine(inScanner.Text())
 		if err != nil {
 			log.Printf("error parsiing line: %v", err)
 		}
 		out = append(out, ops...)
-
 	}
-	if err := scanner.Err(); err != nil {
+	if err := inScanner.Err(); err != nil {
 		log.Printf("error while scanning: %v", err)
 		return nil
 	}

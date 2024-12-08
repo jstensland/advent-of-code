@@ -5,10 +5,32 @@ import (
 	"fmt"
 	"io"
 	"sync"
+
+	"github.com/jstensland/advent-of-code/2024/runner"
 )
 
-// RunPart1 solves part 1.
-func RunPart1(in io.Reader) (int, error) {
+func Run(inFile string) error {
+	in := runner.Reader(inFile)
+	defer in.Close() //nolint:errcheck // no need to check for error
+	answer, err := SolvePart1(in)
+	if err != nil {
+		return err
+	}
+	fmt.Println("Day 6 part 1:", answer) //nolint:forbidigo // no IO CLI yet
+
+	// TOO SLOW
+	fmt.Println("Day 6 part 2:", "skipped") //nolint:forbidigo // no IO CLI yet
+	// in2 := runner.Reader(inFile)
+	// defer in2.Close()
+	// answer, err = SolvePart2(in2)
+	// if err != nil {
+	//   return err
+	// }
+	// fmt.Println("Day 6 part 2:", answer)
+	return nil
+}
+
+func SolvePart1(in io.Reader) (int, error) {
 	layout, err := ParseInput(in)
 	if err != nil {
 		return 0, fmt.Errorf("error parsing input file: %w", err)
@@ -19,8 +41,7 @@ func RunPart1(in io.Reader) (int, error) {
 	return layout.Count(), nil
 }
 
-// RunPart2 solves part 2.
-func RunPart2(in io.Reader) (int, error) {
+func SolvePart2(in io.Reader) (int, error) {
 	layout, err := ParseInput(in)
 	if err != nil {
 		return 0, fmt.Errorf("error parsing input file: %w", err)
@@ -30,11 +51,9 @@ func RunPart2(in io.Reader) (int, error) {
 	// go through each location on the map, placing a hazard and checking
 	// for a loop
 
-	// This is too slow...
+	// This is slow still...
 	// Optimizaitons:
-	// - Check each location in parallel, or with a worker pool
 	// - Is there any info worth caching if hazards have moved?
-
 	wg := sync.WaitGroup{}
 	for location := range layout.Locations() {
 		if layout.layout[location.Row][location.Col] == Empty {

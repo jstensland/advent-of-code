@@ -1,3 +1,4 @@
+// Package day7 solves AoC 2024 day 4.
 package day4
 
 import (
@@ -6,14 +7,37 @@ import (
 	"io"
 	"iter"
 	"log"
+
+	"github.com/jstensland/advent-of-code/2024/runner"
 )
 
+func Run(inFile string) error {
+	in := runner.Reader(inFile)
+	defer in.Close() //nolint:errcheck // no need to check for error
+
+	answer, err := SolvePart1(in)
+	if err != nil {
+		return err
+	}
+	fmt.Println("Day 4 part 1:", answer) //nolint:forbidigo // no IO CLI yet
+
+	in2 := runner.Reader(inFile)
+	defer in2.Close() //nolint:errcheck // no need to check for error
+	answer, err = SolvePart2(in2)
+	if err != nil {
+		return err
+	}
+	fmt.Println("Day 4 part 2:", answer) //nolint:forbidigo // no IO CLI yet
+	return nil
+}
+
+// SolvePart1 finds occurances of XMAS in a wordsearch fashion.
+//
 // It's a small input, so parse the whole thing into memory
 // and then search for XMAS from every X, checking each of the 8
 // possible directions.
-func RunPart1(in io.ReadCloser) (int, error) {
+func SolvePart1(in io.Reader) (int, error) {
 	grid, err := ParseGrid(in)
-	defer in.Close()
 	if err != nil {
 		return 0, fmt.Errorf("error loading grid: %w", err)
 	}
@@ -21,9 +45,8 @@ func RunPart1(in io.ReadCloser) (int, error) {
 	return grid.XmasCount(), nil
 }
 
-func RunPart2(in io.ReadCloser) (int, error) {
+func SolvePart2(in io.Reader) (int, error) {
 	grid, err := ParseGrid(in)
-	defer in.Close()
 	if err != nil {
 		return 0, fmt.Errorf("error loading grid: %w", err)
 	}

@@ -16,7 +16,7 @@ func TestPart1(t *testing.T) {
 	in, err := os.Open(inFile)
 	require.NoError(t, err)
 
-	answer, err := day3.RunPart1(in)
+	answer, err := day3.SolvePart1(in)
 
 	assert.NoError(t, err)
 	assert.Equal(t, 175700056, answer) // confirmed
@@ -27,7 +27,7 @@ func TestPart2(t *testing.T) {
 	in, err := os.Open(inFile)
 	require.NoError(t, err)
 
-	answer, err := day3.RunPart2(in)
+	answer, err := day3.SolvePart2(in)
 
 	assert.NoError(t, err)
 	// 102785526 // wrong answer when not taking into accoutn new line

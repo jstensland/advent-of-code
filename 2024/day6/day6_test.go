@@ -2,7 +2,6 @@ package day6_test
 
 import (
 	"io"
-	"os"
 	"strings"
 	"testing"
 
@@ -10,14 +9,16 @@ import (
 	"github.com/stretchr/testify/require"
 
 	"github.com/jstensland/advent-of-code/2024/day6"
+	"github.com/jstensland/advent-of-code/2024/runner"
 )
 
 func TestPart1Input(t *testing.T) {
-	inFile := "./input.txt"
-	in, err := os.Open(inFile)
-	require.NoError(t, err)
+	// inFile := "./input.txt"
+	// in, err := os.Open(inFile)
+	// require.NoError(t, err)
 
-	answer, err := day6.RunPart1(in)
+	// answer, err := day6.RunPart1(in)
+	answer, err := day6.SolvePart1(runner.Reader("./input.txt"))
 
 	require.NoError(t, err)
 	assert.Equal(t, 4903, answer) // confirmed
@@ -25,11 +26,7 @@ func TestPart1Input(t *testing.T) {
 
 // too slow...
 func TestPart2Input(t *testing.T) {
-	inFile := "./input.txt"
-	in, err := os.Open(inFile)
-	require.NoError(t, err)
-
-	answer, err := day6.RunPart2(in)
+	answer, err := day6.SolvePart2(runner.Reader("./input.txt"))
 
 	require.NoError(t, err)
 	assert.Equal(t, 1911, answer)
@@ -50,14 +47,14 @@ func exampleIn() io.Reader {
 }
 
 func TestPart1Example(t *testing.T) {
-	answer, err := day6.RunPart1(exampleIn())
+	answer, err := day6.SolvePart1(exampleIn())
 
 	require.NoError(t, err)
 	assert.Equal(t, 41, answer)
 }
 
 func TestPart2Example(t *testing.T) {
-	answer, err := day6.RunPart2(exampleIn())
+	answer, err := day6.SolvePart2(exampleIn())
 
 	require.NoError(t, err)
 	assert.Equal(t, 6, answer)

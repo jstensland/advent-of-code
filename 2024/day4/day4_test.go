@@ -20,7 +20,7 @@ XMASX`))
 }
 
 func TestRunPart1Small(t *testing.T) {
-	total, err := day4.RunPart1(smallGrid())
+	total, err := day4.SolvePart1(smallGrid())
 
 	require.NoError(t, err)
 	assert.Equal(t, 4+1+1, total)
@@ -31,7 +31,7 @@ func TestRunPart1(t *testing.T) {
 	in, err := os.Open(inFile)
 	require.NoError(t, err)
 
-	total, err := day4.RunPart1(in)
+	total, err := day4.SolvePart1(in)
 
 	require.NoError(t, err)
 	assert.Equal(t, 2434, total)
@@ -51,7 +51,7 @@ M.M.M.M.M.
 }
 
 func TestRunPart2Example(t *testing.T) {
-	total, err := day4.RunPart2(grid2Example())
+	total, err := day4.SolvePart2(grid2Example())
 
 	require.NoError(t, err)
 	assert.Equal(t, 9, total)
@@ -71,7 +71,7 @@ M.M.M.M.S.
 }
 
 func TestRunPart2EdgeCases(t *testing.T) {
-	total, err := day4.RunPart2(grid2VariousCasesExample())
+	total, err := day4.SolvePart2(grid2VariousCasesExample())
 
 	require.NoError(t, err)
 	assert.Equal(t, 7, total)
@@ -82,7 +82,7 @@ func TestRunPart2(t *testing.T) {
 	in, err := os.Open(inFile)
 	require.NoError(t, err)
 
-	total, err := day4.RunPart2(in)
+	total, err := day4.SolvePart2(in)
 
 	require.NoError(t, err)
 	assert.Equal(t, 1835, total)
