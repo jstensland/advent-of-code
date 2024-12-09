@@ -30,7 +30,6 @@ func SolvePart2(in io.Reader) (int, error) {
 	if err != nil {
 		log.Fatalf("Error reading input: %s", err)
 	}
-
 	return left.freqDistance(right), nil
 }
 
@@ -75,16 +74,11 @@ func abs(x int) int {
 func (l *list) freqDistance(other *list) int {
 	total := 0
 	for _, val := range l.list {
-		lFreq, ok := l.freqMap[val]
-		if !ok {
-			panic("if it's in the list, it should appear at least once")
-		}
 		otherFreq, ok := other.freqMap[val]
 		if !ok {
 			otherFreq = 0
 		}
-
-		total += val * lFreq * otherFreq
+		total += val * otherFreq
 	}
 	return total
 }
