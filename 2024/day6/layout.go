@@ -56,21 +56,23 @@ type Layout struct {
 // Optimizations:
 // - If I go the worker pool route, reset and reuse layouts
 func (l *Layout) LoopCheck(loc Location) bool {
-	// copy the layout
+	testLayout := Copy(l)
+	// set the hazard
+	testLayout.layout[loc.Row][loc.Col] = Hazard
+	return testLayout.PatrolTest()
+}
+
+func Copy(l *Layout) *Layout {
 	newLayout := make([][]CellStatus, len(l.layout))
 	for i := range l.layout {
 		newLayout[i] = make([]CellStatus, len(l.layout[i]))
 		copy(newLayout[i], l.layout[i])
 	}
-	// set the hazard
-	newLayout[loc.Row][loc.Col] = Hazard
-
-	// create a new layout with the hazard placed
-	testLayout := Layout{layout: newLayout, guardPosition: l.guardPosition}
-	return testLayout.PatrolTest()
+	return &Layout{layout: newLayout, guardPosition: l.guardPosition}
 }
 
-// PatrolTest will until the guard gets back to starting location and orientation, or leaves
+// PatrolTest walk the guard until the guard gets back to starting location and orientation
+// or walks off the map
 // returns false if no loop, but true if loop
 func (l *Layout) PatrolTest() bool {
 	pastPositions := []GuardPosition{l.guardPosition}
@@ -136,6 +138,7 @@ func (l *Layout) checkFront() (Location, bool) {
 	return forwardCell, l.layout[forwardCell.Row][forwardCell.Col] != Hazard
 }
 
+// Count visited location
 func (l *Layout) Count() int {
 	count := 0
 	for location := range l.Locations() {
@@ -144,6 +147,19 @@ func (l *Layout) Count() int {
 		}
 	}
 	return count
+}
+
+// PatrolledLocations will return locations that were visited by the guard
+func (l *Layout) PatrolledLocations() iter.Seq[Location] {
+	return func(yield func(l Location) bool) {
+		for location := range l.Locations() {
+			if l.layout[location.Row][location.Col] == Visited {
+				if !yield(location) {
+					return
+				}
+			}
+		}
+	}
 }
 
 func (l *Layout) Locations() iter.Seq[Location] {
