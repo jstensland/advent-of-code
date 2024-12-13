@@ -6,12 +6,16 @@ import (
 	"io"
 
 	"github.com/jstensland/advent-of-code/2024/day1"
+	"github.com/jstensland/advent-of-code/2024/day10"
+	"github.com/jstensland/advent-of-code/2024/day11"
 	"github.com/jstensland/advent-of-code/2024/day2"
 	"github.com/jstensland/advent-of-code/2024/day3"
 	"github.com/jstensland/advent-of-code/2024/day4"
 	"github.com/jstensland/advent-of-code/2024/day5"
 	"github.com/jstensland/advent-of-code/2024/day6"
 	"github.com/jstensland/advent-of-code/2024/day7"
+	"github.com/jstensland/advent-of-code/2024/day8"
+	"github.com/jstensland/advent-of-code/2024/day9"
 )
 
 type Solver func(io.Reader) (int, error)
@@ -33,9 +37,19 @@ func Run() error {
 		{"Day 5 Part 1", day5.SolvePart1, "./day5/input.txt"},
 		{"Day 5 Part 2", day5.SolvePart2, "./day5/input.txt"},
 		{"Day 6 Part 1", day6.SolvePart1, "./day6/input.txt"},
-		// {"Day 6 Part 2", day6.SolvePart2, "./day6/input.txt"}, // too slow
+		{"Day 6 Part 2", day6.SolvePart2, "./day6/input.txt"},
 		{"Day 7 Part 1", day7.SolvePart1, "./day7/input.txt"},
 		{"Day 7 Part 2", day7.SolvePart2, "./day7/input.txt"},
+		{"Day 7 Part 1", day7.SolvePart1, "./day7/input.txt"},
+		{"Day 7 Part 2", day7.SolvePart2, "./day7/input.txt"},
+		{"Day 8 Part 1", day8.SolvePart1, "./day8/input.txt"},
+		{"Day 8 Part 2", day8.SolvePart2, "./day8/input.txt"},
+		{"Day 9 Part 1", day9.SolvePart1, "./day9/input.txt"},
+		{"Day 9 Part 2", day9.SolvePart2, "./day9/input.txt"},
+		{"Day 10 Part 1", day10.SolvePart1, "./day10/input.txt"},
+		{"Day 10 Part 2", day10.SolvePart2, "./day10/input.txt"},
+		{"Day 11 Part 1", day11.SolvePart1, "./day11/input.txt"},
+		{"Day 11 Part 2", day11.SolvePart2, "./day11/input.txt"},
 	} {
 		err := RunIt(day.name, day.fn, day.in)
 		if err != nil {

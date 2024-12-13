@@ -21,8 +21,17 @@ func SolvePart1(in io.Reader) (int, error) {
 	return len(*stoneLine), nil
 }
 
-// SolvePart2 solves without accounting for order
-func SolvePart2(in io.Reader, rounds int) (int64, error) {
+// SolvePart2 solves with the requested number of rounds
+// it changes int64 -> int to match runner signature.
+//
+// And looks like I didn't need int64 on my machine
+func SolvePart2(in io.Reader) (int, error) {
+	out, err := SolvePart2Rounds(in, 75) //nolint:mnd // number of blinks is arbitrary
+	return int(out), err
+}
+
+// SolvePart2Rounds solves without accounting for order
+func SolvePart2Rounds(in io.Reader, rounds int) (int64, error) {
 	stoneLine, err := ParseInput(in)
 	if err != nil {
 		return 0, fmt.Errorf("error parsing input file: %w", err)

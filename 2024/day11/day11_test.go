@@ -73,10 +73,10 @@ func TestPart2Input(t *testing.T) {
 	in, err := os.Open(inFile)
 	require.NoError(t, err)
 
-	answer, err := day11.SolvePart2(in, 75)
+	answer, err := day11.SolvePart2(in)
 
 	require.NoError(t, err)
-	assert.Equal(t, int64(221632504974231), answer) // ?
+	assert.Equal(t, 221632504974231, answer) // ?
 }
 
 func TestPart2ExampleSteps(t *testing.T) {
@@ -120,7 +120,7 @@ func TestPart2ExampleSteps(t *testing.T) {
 }
 
 func TestPart2Example(t *testing.T) {
-	answer, err := day11.SolvePart2(exampleIn(), 25)
+	answer, err := day11.SolvePart2Rounds(exampleIn(), 25)
 
 	require.NoError(t, err)
 	assert.Equal(t, int64(55312), answer)
