@@ -8,6 +8,7 @@ import (
 	"github.com/jstensland/advent-of-code/2024/day1"
 	"github.com/jstensland/advent-of-code/2024/day10"
 	"github.com/jstensland/advent-of-code/2024/day11"
+	"github.com/jstensland/advent-of-code/2024/day12"
 	"github.com/jstensland/advent-of-code/2024/day2"
 	"github.com/jstensland/advent-of-code/2024/day3"
 	"github.com/jstensland/advent-of-code/2024/day4"
@@ -41,8 +42,6 @@ func Run() error {
 		{"Day 6 Part 2", day6.SolvePart2, "./day6/input.txt"},
 		{"Day 7 Part 1", day7.SolvePart1, "./day7/input.txt"},
 		{"Day 7 Part 2", day7.SolvePart2, "./day7/input.txt"},
-		{"Day 7 Part 1", day7.SolvePart1, "./day7/input.txt"},
-		{"Day 7 Part 2", day7.SolvePart2, "./day7/input.txt"},
 		{"Day 8 Part 1", day8.SolvePart1, "./day8/input.txt"},
 		{"Day 8 Part 2", day8.SolvePart2, "./day8/input.txt"},
 		{"Day 9 Part 1", day9.SolvePart1, "./day9/input.txt"},
@@ -51,6 +50,8 @@ func Run() error {
 		{"Day 10 Part 2", day10.SolvePart2, "./day10/input.txt"},
 		{"Day 11 Part 1", day11.SolvePart1, "./day11/input.txt"},
 		{"Day 11 Part 2", day11.SolvePart2, "./day11/input.txt"},
+		{"Day 12 Part 1", day12.SolvePart1, "./day12/input.txt"},
+		{"Day 12 Part 2", day12.SolvePart2, "./day12/input.txt"},
 	} {
 		err := RunIt(day.name, day.fn, day.in)
 		if err != nil {
