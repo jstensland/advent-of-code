@@ -1,4 +1,5 @@
-package runner
+// Package input is for utilitize to handle input files.
+package input
 
 import (
 	"io"
@@ -15,6 +16,3 @@ func Reader(inFile string) io.ReadCloser {
 	}
 	return in
 }
-
-// IMPROVEMENT: add a function that Reads all for use with parsers that need
-// the full file anyways

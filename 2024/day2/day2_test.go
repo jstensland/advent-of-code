@@ -8,19 +8,19 @@ import (
 	"github.com/stretchr/testify/require"
 
 	"github.com/jstensland/advent-of-code/2024/day2"
-	"github.com/jstensland/advent-of-code/2024/runner"
+	"github.com/jstensland/advent-of-code/2024/input"
 )
 
 func TestRunPart1(t *testing.T) {
 	// IMPROVEMENT: improve runner.Reader or add another option... shouldn't log fatal in tests
-	answer, err := day2.SolvePart1(runner.Reader("./input.txt"))
+	answer, err := day2.SolvePart1(input.Reader("./input.txt"))
 
 	require.NoError(t, err)
 	assert.Equal(t, 252, answer) // confirmed
 }
 
 func TestRunPart2(t *testing.T) {
-	answer, err := day2.SolvePart2(runner.Reader("./input.txt"))
+	answer, err := day2.SolvePart2(input.Reader("./input.txt"))
 
 	require.NoError(t, err)
 	assert.Equal(t, 324, answer) // confirmed

@@ -16,6 +16,7 @@ import (
 	"github.com/jstensland/advent-of-code/2024/day7"
 	"github.com/jstensland/advent-of-code/2024/day8"
 	"github.com/jstensland/advent-of-code/2024/day9"
+	"github.com/jstensland/advent-of-code/2024/input"
 )
 
 type Solver func(io.Reader) (int, error)
@@ -60,7 +61,7 @@ func Run() error {
 }
 
 func RunIt(name string, fn Solver, inFile string) error {
-	in := Reader(inFile)
+	in := input.Reader(inFile)
 	defer in.Close() //nolint:errcheck // no need to check for error
 
 	answer, err := fn(in)

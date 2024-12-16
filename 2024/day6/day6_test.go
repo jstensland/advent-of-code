@@ -9,7 +9,7 @@ import (
 	"github.com/stretchr/testify/require"
 
 	"github.com/jstensland/advent-of-code/2024/day6"
-	"github.com/jstensland/advent-of-code/2024/runner"
+	"github.com/jstensland/advent-of-code/2024/input"
 )
 
 func TestPart1Input(t *testing.T) {
@@ -18,7 +18,7 @@ func TestPart1Input(t *testing.T) {
 	// require.NoError(t, err)
 
 	// answer, err := day6.RunPart1(in)
-	answer, err := day6.SolvePart1(runner.Reader("./input.txt"))
+	answer, err := day6.SolvePart1(input.Reader("./input.txt"))
 
 	require.NoError(t, err)
 	assert.Equal(t, 4903, answer) // confirmed
@@ -26,7 +26,7 @@ func TestPart1Input(t *testing.T) {
 
 // too slow...
 func TestPart2Input(t *testing.T) {
-	answer, err := day6.SolvePart2(runner.Reader("./input.txt"))
+	answer, err := day6.SolvePart2(input.Reader("./input.txt"))
 
 	require.NoError(t, err)
 	assert.Equal(t, 1911, answer)

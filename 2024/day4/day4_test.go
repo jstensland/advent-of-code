@@ -12,11 +12,11 @@ import (
 	"github.com/jstensland/advent-of-code/2024/day4"
 )
 
-func smallGrid() io.ReadCloser {
-	return io.NopCloser(strings.NewReader(`XMASX
+func smallGrid() io.Reader {
+	return strings.NewReader(`XMASX
 XMASM
 XMASA
-XMASX`))
+XMASX`)
 }
 
 func TestRunPart1Small(t *testing.T) {
@@ -37,8 +37,8 @@ func TestRunPart1(t *testing.T) {
 	assert.Equal(t, 2434, total)
 }
 
-func grid2Example() io.ReadCloser {
-	return io.NopCloser(strings.NewReader(`.M.S......
+func grid2Example() io.Reader {
+	return strings.NewReader(`.M.S......
 ..A..MSMS.
 .M.S.MAA..
 ..A.ASMSM.
@@ -47,7 +47,7 @@ func grid2Example() io.ReadCloser {
 S.S.S.S.S.
 .A.A.A.A..
 M.M.M.M.M.
-..........`))
+..........`)
 }
 
 func TestRunPart2Example(t *testing.T) {
@@ -57,8 +57,8 @@ func TestRunPart2Example(t *testing.T) {
 	assert.Equal(t, 9, total)
 }
 
-func grid2VariousCasesExample() io.ReadCloser {
-	return io.NopCloser(strings.NewReader(`.M.M......
+func grid2VariousCasesExample() io.Reader {
+	return strings.NewReader(`.M.M......
 ..A..MSMS.
 .M.S.MAA.A
 ..A.ASMSM.
@@ -67,7 +67,7 @@ func grid2VariousCasesExample() io.ReadCloser {
 S.S.S.S.S.
 .A.A.A.A..
 M.M.M.M.S.
-..........`))
+..........`)
 }
 
 func TestRunPart2EdgeCases(t *testing.T) {
