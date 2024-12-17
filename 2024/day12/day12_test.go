@@ -101,5 +101,5 @@ func TestRunPart2(t *testing.T) {
 	total, err := day12.SolvePart2(in)
 
 	require.NoError(t, err)
-	assert.Equal(t, 821428, total) // ?
+	assert.Equal(t, 821428, total) // confirmed
 }
