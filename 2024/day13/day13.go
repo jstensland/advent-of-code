@@ -137,7 +137,6 @@ func ParseIn(in io.Reader) ([]Game, error) {
 	games := []Game{}
 	// may want to read them all and split on double new lines, or just read until newline
 	// parsing as you go
-	regexp.MustCompile(`(?m)(?P<key>\w+):\s+(?P<value>\w+)$`)
 	buttonAMatch := regexp.MustCompile(`Button A: X\+(\d+), Y\+(\d+)`)
 	buttonBMatch := regexp.MustCompile(`Button B: X\+(\d+), Y\+(\d+)`)
 	prizeMatch := regexp.MustCompile(`Prize: X=(\d+), Y=(\d+)`)

@@ -9,6 +9,8 @@ import (
 	"github.com/jstensland/advent-of-code/2024/day10"
 	"github.com/jstensland/advent-of-code/2024/day11"
 	"github.com/jstensland/advent-of-code/2024/day12"
+	"github.com/jstensland/advent-of-code/2024/day13"
+	"github.com/jstensland/advent-of-code/2024/day14"
 	"github.com/jstensland/advent-of-code/2024/day2"
 	"github.com/jstensland/advent-of-code/2024/day3"
 	"github.com/jstensland/advent-of-code/2024/day4"
@@ -52,6 +54,20 @@ func Run() error {
 		{"Day 11 Part 2", day11.SolvePart2, "./day11/input.txt"},
 		{"Day 12 Part 1", day12.SolvePart1, "./day12/input.txt"},
 		{"Day 12 Part 2", day12.SolvePart2, "./day12/input.txt"},
+		{"Day 13 Part 1", day13.SolvePart1, "./day13/input.txt"},
+		{"Day 13 Part 2", day13.SolvePart2, "./day13/input.txt"},
+		{
+			"Day 14 Part 1",
+			//nolint:mnd // magic numbers are dimensions asked for
+			func(in io.Reader) (int, error) { return day14.SolvePart1(in, 103, 101) },
+			"./day14/input.txt",
+		},
+		{
+			"Day 14 Part 2",
+			//nolint:mnd // magic numbers are dimensions asked for
+			func(in io.Reader) (int, error) { return day14.SolvePart2(in, 103, 101) },
+			"./day14/input.txt",
+		},
 	} {
 		err := RunIt(day.name, day.fn, day.in)
 		if err != nil {
