@@ -20,6 +20,8 @@ const (
 	quadrant3
 )
 
+const treePicThreshold = 10
+
 // RobotID uniquely identifies a robot. There are only 500.
 type RobotID int
 
@@ -71,19 +73,18 @@ func SolvePart2(in io.Reader, height, width int) (int, error) {
 		return 0, fmt.Errorf("error loading input: %w", err)
 	}
 
-	seconds := 0
-	// for i := range 10_000 {
+	var seconds int
 	i := 1
 	for {
 		grid.Tick()
-		if i%1_000 == 0 {
-			// show progress
-			fmt.Println("tick:", i)
-		}
+		// if i%1_000 == 0 {
+		// 	// show progress
+		// 	fmt.Println("tick:", i)
+		// }
 
-		if grid.TreeLike(10) {
-			fmt.Println("tree like tick:", i)
-			fmt.Println(grid)
+		if grid.TreeLike(treePicThreshold) {
+			// fmt.Println("tree like tick:", i) // see the answer
+			// fmt.Println(grid) // see the trees
 			seconds = i
 			break
 		}
@@ -99,8 +100,7 @@ func (g *Grid) Tick() {
 	}
 }
 
-// TODO: try this density
-// TODO: look at other image processing approaches
+// IMPROVEMENT: look at other image processing approaches. Just looking for a lot of ### in a row for now
 
 func (g *Grid) TreeLike(consecutive int) bool {
 	// sort the robots by row and then column
@@ -129,37 +129,6 @@ func (g *Grid) TreeLike(consecutive int) bool {
 	return false
 }
 
-// // TreeLike just check symmetry on the first row only to start
-// func (g *Grid) TreeLike() bool {
-// 	// init grid
-// 	grid := make([][]bool, g.Height)
-// 	for row := range g.Height {
-// 		grid[row] = make([]bool, g.Width)
-// 	}
-//
-// 	// place them on a grid
-// 	for _, robot := range g.Robots {
-// 		grid[robot.Position.Row][robot.Position.Col] = true
-// 	}
-//
-// 	// check the gird
-// 	count := 0
-// 	for row := range g.Height {
-// 		for col := range g.Width {
-// 			// check if 10 in a row are true
-// 			if grid[row][col] {
-// 				count++
-// 			} else {
-// 				count = 0
-// 			}
-// 			if count == 10 { // 5 in a row!
-// 				return true
-// 			}
-// 		}
-// 	}
-// 	return false
-// }
-
 func (g *Grid) TreeLikeSymmetric() bool {
 	// init grid
 	grid := make([][]bool, g.Height)
@@ -181,42 +150,6 @@ func (g *Grid) TreeLikeSymmetric() bool {
 		}
 	}
 	return true
-
-	// robotIndex := 0
-	// robotRow := []Position{}
-	// row := 0
-	// for row == 0 {
-	// 	// need at least one
-	// 	if g.Robots[robotIndex].Position.Row == row {
-	// 		robotRow = append(robotRow, g.Robots[robotIndex].Position)
-	// 	}
-	// 	robotIndex++
-	// 	if robotIndex >= len(g.Robots) {
-	// 		break
-	// 	}
-	// 	if g.Robots[robotIndex].Position.Row != row {
-	// 		row++
-	// 	}
-	// }
-	//
-	// // Test symmetry first
-	// for idx := range len(robotRow)/2 + 1 {
-	// 	// go through the robots
-	// 	if idx >= len(robotRow) {
-	// 		fmt.Println("impossible")
-	// 		break
-	// 	}
-	// 	if robotRow[idx].Col != g.Width-robotRow[len(robotRow)-idx-1].Col-1 {
-	// 		return false
-	// 	}
-	// 	// If there is a middle robot, it must be in the middle of the row
-	// 	if idx == len(robotRow)-idx-1 && robotRow[idx].Col != g.Width/2 {
-	// 		return false
-	// 	}
-	// }
-	//
-	// fmt.Println("symmetric?:", robotRow)
-	// return true
 }
 
 func (g *Grid) String() string {
@@ -236,7 +169,8 @@ func (g *Grid) String() string {
 	for row < g.Height {
 		col := 0
 		for col < g.Width {
-			if robotIndex < len(g.Robots) && g.Robots[robotIndex].Position.Row == row && g.Robots[robotIndex].Position.Col == col {
+			if robotIndex < len(g.Robots) && g.Robots[robotIndex].Position.Row == row &&
+				g.Robots[robotIndex].Position.Col == col {
 				for robotIndex < len(g.Robots) &&
 					g.Robots[robotIndex].Position.Row == row &&
 					g.Robots[robotIndex].Position.Col == col {
@@ -274,8 +208,8 @@ func (g *Grid) Quadrant(p Position) Quadrant {
 
 func (g *Grid) SafetyFactor() int {
 	if g.Width%2 == 0 || g.Height%2 == 0 {
-		fmt.Println("width:", g.Width)
-		fmt.Println("height:", g.Height)
+		// fmt.Println("width:", g.Width)
+		// fmt.Println("height:", g.Height)
 		panic("even dimensions not safe! panic!")
 	}
 
