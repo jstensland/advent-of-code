@@ -1,3 +1,4 @@
+// Package day15 solves Advent of Code 2024 Day 15: Rambunctious Recitation
 package day15
 
 import (
@@ -16,80 +17,13 @@ func SolvePart1(in io.Reader) (int, error) {
 		return 0, fmt.Errorf("error loading input: %w", err)
 	}
 	// fmt.Println(grid)
-	grid.RunRobots()
+	grid.RunRobotsV1()
 	// fmt.Println(grid)
 	return grid.TotalGPS(), nil
 }
 
-type State int
-
-func (s State) String() string {
-	return map[State]string{
-		Robot:    "@",
-		Wall:     "#",
-		Box:      "O",
-		BoxLeft:  "[",
-		BoxRight: "]",
-		Empty:    ".",
-	}[s]
-}
-
-const (
-	Robot State = iota
-	Wall
-	Box
-	BoxLeft  // for wide boxes
-	BoxRight // for wide boxes
-	Empty
-)
-
-type Grid struct {
-	data     [][]State
-	robotLoc Location
-	movesVec []MoveVector
-	Width    int
-	Height   int
-}
-
-func (g *Grid) GetLoc(l Location) State {
-	return g.data[l.Row][l.Col]
-}
-
-type MoveVector struct {
-	deltaRow int
-	deltaCol int
-}
-
-//nolint:gochecknoglobals // reference sentinel values for possilbe moves
-var (
-	upVec    = MoveVector{-1, 0}
-	rightVec = MoveVector{0, 1}
-	downVec  = MoveVector{1, 0}
-	leftVec  = MoveVector{0, -1}
-)
-
-func (mv MoveVector) String() string {
-	return map[MoveVector]string{
-		upVec:    "^",
-		rightVec: ">",
-		downVec:  "v",
-		leftVec:  "<",
-	}[mv]
-}
-
-func (g *Grid) String() string {
-	out := ""
-	for row := range g.Height {
-		for col := range g.Width {
-			out += g.data[row][col].String()
-		}
-		out += "\n"
-	}
-	return out
-}
-
-// RunRobots moves the robot all the moves. affecting the grid
-func (g *Grid) RunRobots() {
+// RunRobotsV1 moves the robot all the moves. affecting the grid
+func (g *Grid) RunRobotsV1() {
 	for _, mv := range g.movesVec {
 		// fmt.Println(g)
 		// fmt.Println(mv)

@@ -223,19 +223,33 @@ func TestPart2Moves(t *testing.T) {
 			robotLoc:      day15.Location{3, 5},
 		},
 		{
-			desc:          "push boxes up not aligned",
+			desc:          "boxes up not aligned",
 			startingBoard: board7,
 			moves:         "<^>v>^^",
 			robotLoc:      day15.Location{4, 5},
 		},
 		{
-			desc:          "push boxes down, not aligned",
+			desc:          "boxes down, not aligned",
 			startingBoard: board8,
 			moves:         "<^<<v<<<",
 			robotLoc:      day15.Location{3, 4},
 		},
+		{
+			desc: "boxes down offset chain",
+			startingBoard: `#######
+#.....#
+#.....#
+#.OO..#
+#.OO@.#
+#O....#
+#.....#
+#######`,
+			moves:    "<>^^<<<vvv",
+			robotLoc: day15.Location{3, 5},
+		},
 
-		// Add tests for down, not aligned
+		// Add scenario for one of the two blocks pushed being blocked
+
 	}
 	for _, tC := range testCases {
 		t.Run(tC.desc, func(t *testing.T) {
@@ -245,8 +259,8 @@ func TestPart2Moves(t *testing.T) {
 
 			grid.RunRobotsV2()
 
-			assert.Equal(t, tC.robotLoc.Row, grid.RobotLocationV2().Row)
-			assert.Equal(t, tC.robotLoc.Col, grid.RobotLocationV2().Col)
+			assert.Equal(t, tC.robotLoc.Row, grid.RobotLocationV2().Row, "Unexpected row")
+			assert.Equal(t, tC.robotLoc.Col, grid.RobotLocationV2().Col, "Unexpected column")
 		})
 	}
 }
@@ -270,6 +284,26 @@ func TestExampleIn(t *testing.T) {
 
 func TestExampleTotalGPSV2(_ *testing.T) {}
 
+func smallExamplePart2() io.Reader {
+	return strings.NewReader(`#######
+#...#.#
+#.....#
+#..OO@#
+#..O..#
+#.....#
+#######
+
+<vv<<^^<<^^
+`)
+}
+
+func TestPart2Example(t *testing.T) {
+	total, err := day15.SolvePart2(smallExamplePart2())
+
+	require.NoError(t, err)
+	assert.Equal(t, 618, total)
+}
+
 func TestPart2(t *testing.T) {
 	inFile := "./input.txt"
 	in, err := os.Open(inFile)
@@ -278,6 +312,5 @@ func TestPart2(t *testing.T) {
 	total, err := day15.SolvePart2(in)
 
 	require.NoError(t, err)
-	// 1461173 is too high
-	assert.Equal(t, 1461173, total) // WRONG!
+	assert.Equal(t, 1446175, total) // Confirmed
 }

@@ -17,16 +17,6 @@ func SolvePart2(in io.Reader) (int, error) {
 	return grid.TotalGPSV2(), nil
 }
 
-type Location struct {
-	Row int
-	Col int
-}
-
-// Add will add a vector to a location and returns the resulting location.
-func (loc Location) Add(vec MoveVector) Location {
-	return Location{Row: loc.Row + vec.deltaRow, Col: loc.Col + vec.deltaCol}
-}
-
 func (g *Grid) TotalGPSV2() int {
 	total := 0
 	for row := range g.Height {
@@ -55,15 +45,54 @@ func (g *Grid) maybeMoveV2(mv MoveVector) {
 	g.doMove(mv, g.robotLoc)
 }
 
-// moveable says if it's worth trying to move the next object
-func moveable(s State) bool {
-	return s == Empty || s == BoxLeft || s == BoxRight
+func (g *Grid) maybeMoveDoubleBox(currentLoc Location, mv MoveVector) bool {
+	currentVal := g.GetLoc(currentLoc)
+	// now for the boxes...
+	var boxLoc boxLocation
+	if currentVal == BoxLeft {
+		boxLoc = boxLocation{left: currentLoc, right: Location{Row: currentLoc.Row, Col: currentLoc.Col + 1}}
+	} else {
+		boxLoc = boxLocation{left: Location{Row: currentLoc.Row, Col: currentLoc.Col - 1}, right: currentLoc}
+	}
+
+	// move block
+	if mv == upVec || mv == downVec {
+		return g.maybeMoveDoubleBoxVert(boxLoc, mv)
+	}
+
+	// move blocks right and left
+	var afterBoxLoc Location
+	if mv == leftVec {
+		afterBoxLoc = boxLoc.left.Add(mv)
+	} else {
+		afterBoxLoc = boxLoc.right.Add(mv)
+	}
+	if g.doMove(mv, afterBoxLoc) {
+		g.moveBoxV2(boxLoc, mv)
+		return true
+	}
+	return false // box didn't move, so can't move this one
 }
 
-// boxLoc is the two sides of a box
-type boxLocation struct {
-	left  Location
-	right Location
+func (g *Grid) maybeMoveDoubleBoxVert(boxLoc boxLocation, mv MoveVector) bool {
+	nextLeft := boxLoc.left.Add(mv)
+	nextRight := boxLoc.right.Add(mv)
+	// if the value directly above the left side of the box is the left side of another box, boxes
+	// are aligned and there is only one to move
+	if g.GetLoc(nextLeft) == BoxLeft {
+		if g.doMove(mv, nextLeft) { // move the one box
+			g.moveBoxV2(boxLoc, mv)
+			return true
+		}
+		return false
+	}
+	// If there are too possible pieces that could move. Must check that they can BOTH move before
+	// moving either one.
+	if doable(g, mv, boxLoc) && g.doMove(mv, nextLeft) && g.doMove(mv, nextRight) {
+		g.moveBoxV2(boxLoc, mv)
+		return true
+	}
+	return false // box didn't move, so can't move this one
 }
 
 // doMove checks if the given move is possible from that location. If it is, it first calls itself
@@ -80,6 +109,7 @@ func (g *Grid) doMove(mv MoveVector, currentLoc Location) bool {
 	if currentVal == Empty {
 		return true // noop to move an empty spot, but possible, so true
 	}
+
 	nextLoc := currentLoc.Add(mv)
 	nextVal := g.GetLoc(nextLoc)
 	if nextVal == Wall {
@@ -89,67 +119,23 @@ func (g *Grid) doMove(mv MoveVector, currentLoc Location) bool {
 
 	if currentVal == Robot {
 		// move robot. robot one wide
-		if moveable(nextVal) && g.doMove(mv, nextLoc) { // if next value could move, try to move it
+		if g.doMove(mv, nextLoc) { // if next value could move, try to move it
 			g.moveRobot(currentLoc, nextLoc) // it moved, so move the robot now
 			return true
 		}
 		return false // not movable, or didn't move
 	}
 
-	// now for the boxes...
-	var boxLoc boxLocation
-	if currentVal == BoxLeft {
-		boxLoc = boxLocation{left: currentLoc, right: Location{Row: currentLoc.Row, Col: currentLoc.Col + 1}}
-	} else if currentVal == BoxRight {
-		boxLoc = boxLocation{left: Location{Row: currentLoc.Row, Col: currentLoc.Col - 1}, right: currentLoc}
-	}
+	return g.maybeMoveDoubleBox(currentLoc, mv)
+}
 
-	// move block
-	if mv == upVec || mv == downVec {
-		// check of whatever is above the right and left hands sides are moveable.
-		if moveable(g.GetLoc(boxLoc.left.Add(mv))) && moveable(g.GetLoc(boxLoc.right.Add(mv))) {
-			// if the value directly above the left side of the box is the left side of another box, just move that box
-			if g.GetLoc(boxLoc.left.Add(mv)) == BoxLeft {
-				if g.doMove(mv, boxLoc.left.Add(mv)) { // move the one box
-					g.moveBoxV2(boxLoc, mv)
-					return true
-				}
-			} else {
-				// moveable, but not a left box, will need to move both sides
-				if g.doMove(mv, boxLoc.left.Add(mv)) &&
-					g.doMove(mv, boxLoc.right.Add(mv)) { // move both squares above
-					g.moveBoxV2(boxLoc, mv)
-					return true
-				}
-			}
-		}
-		return false // box didn't move, so can't move this one
-	}
-
-	// move blocks right and left
-	if mv == leftVec {
-		afterBoxLoc := boxLoc.left.Add(mv)
-		if moveable(g.GetLoc(afterBoxLoc)) {
-			if g.doMove(mv, afterBoxLoc) {
-				g.moveBoxV2(boxLoc, mv)
-				return true
-			}
-		}
-		return false // box didn't move, so can't move this one
-	}
-
-	if mv == rightVec {
-		afterBoxLoc := boxLoc.right.Add(mv)
-		if moveable(g.GetLoc(afterBoxLoc)) {
-			if g.doMove(mv, afterBoxLoc) {
-				g.moveBoxV2(boxLoc, mv)
-				return true
-			}
-		}
-		return false // box didn't move, so can't move this one
-	}
-	// impossible
-	panic("did not account for move!")
+// doable makes a copy of the grid and applies the move, returning if it worked.
+//
+// IMPROVEMENT: it could just check, rather than do, which would avoid the copy, but would
+// need recursive logic similar to doMove
+func doable(g *Grid, mv MoveVector, boxLoc boxLocation) bool {
+	dup := g.Copy()
+	return dup.doMove(mv, boxLoc.left.Add(mv)) && dup.doMove(mv, boxLoc.right.Add(mv))
 }
 
 // moveBoxV1 moves the box according to the vector. The spot it is moving to must be empty
