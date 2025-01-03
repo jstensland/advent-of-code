@@ -32,9 +32,13 @@ const (
 )
 
 type Position struct {
-	Row       int
-	Col       int
+	Location
 	Direction Orientation
+}
+
+type Location struct {
+	Row int
+	Col int
 }
 
 // Forward will add a vector to a location and returns the resulting location.
@@ -50,17 +54,33 @@ func (loc Position) Forward() Position {
 	case West:
 		mv = Move{deltaEast: -1, deltaSouth: 0}
 	}
-	return Position{Row: loc.Row + mv.deltaSouth, Col: loc.Col + mv.deltaEast, Direction: loc.Direction}
+	return Position{
+		Location: Location{
+			Row: loc.Row + mv.deltaSouth,
+			Col: loc.Col + mv.deltaEast,
+		},
+		Direction: loc.Direction,
+	}
 }
 
 // Right returns the same position, turned to the right.
 func (loc Position) Right() Position {
-	return Position{Row: loc.Row, Col: loc.Col, Direction: (loc.Direction + 1) % numDirections}
+	return Position{
+		Location: Location{
+			Row: loc.Row, Col: loc.Col,
+		},
+		Direction: (loc.Direction + 1) % numDirections,
+	}
 }
 
 // Left returns the same position, turned to the left..
 func (loc Position) Left() Position {
-	return Position{Row: loc.Row, Col: loc.Col, Direction: ((loc.Direction - 1) + numDirections) % numDirections}
+	return Position{
+		Location: Location{
+			Row: loc.Row, Col: loc.Col,
+		},
+		Direction: ((loc.Direction - 1) + numDirections) % numDirections,
+	}
 }
 
 type Move struct {
@@ -78,6 +98,9 @@ type Grid struct {
 	leastCost int
 
 	visited map[Position]int
+
+	minAnswer int //  should not be Grid state, just experimenting
+	counted   map[Location]bool
 }
 
 func (g *Grid) GetLoc(l Position) State {
@@ -125,12 +148,13 @@ func ParseIn(in io.Reader) (*Grid, error) {
 
 	return &Grid{
 		data:   data,
-		Start:  Position{startRow, startCol, East},
-		End:    Position{endRow, endCol, North}, // end orientation does not matter
+		Start:  Position{Location{startRow, startCol}, East},
+		End:    Position{Location{endRow, endCol}, North}, // end orientation does not matter
 		Width:  len(data[0]),
 		Height: len(data),
 
 		visited: make(map[Position]int),
+		counted: make(map[Location]bool),
 	}, nil
 }
 

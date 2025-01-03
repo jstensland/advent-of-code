@@ -74,7 +74,7 @@ func Run() error {
 		{"Day 15 Part 1", day15.SolvePart1, "./day15/input.txt"},
 		{"Day 15 Part 2", day15.SolvePart2, "./day15/input.txt"},
 		{"Day 16 Part 1", day16.SolvePart1, "./day16/input.txt"},
-		// {"Day 16 Part 2", day16.SolvePart2, "./day16/input.txt"},
+		{"Day 16 Part 2", day16.SolvePart2, "./day16/input.txt"},
 	} {
 		err := RunIt(day.name, day.fn, day.in)
 		if err != nil {
