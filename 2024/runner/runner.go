@@ -11,6 +11,8 @@ import (
 	"github.com/jstensland/advent-of-code/2024/day12"
 	"github.com/jstensland/advent-of-code/2024/day13"
 	"github.com/jstensland/advent-of-code/2024/day14"
+	"github.com/jstensland/advent-of-code/2024/day15"
+	"github.com/jstensland/advent-of-code/2024/day16"
 	"github.com/jstensland/advent-of-code/2024/day2"
 	"github.com/jstensland/advent-of-code/2024/day3"
 	"github.com/jstensland/advent-of-code/2024/day4"
@@ -68,6 +70,11 @@ func Run() error {
 			func(in io.Reader) (int, error) { return day14.SolvePart2(in, 103, 101) },
 			"./day14/input.txt",
 		},
+
+		{"Day 15 Part 1", day15.SolvePart1, "./day15/input.txt"},
+		{"Day 15 Part 2", day15.SolvePart2, "./day15/input.txt"},
+		{"Day 16 Part 1", day16.SolvePart1, "./day16/input.txt"},
+		// {"Day 16 Part 2", day16.SolvePart2, "./day16/input.txt"},
 	} {
 		err := RunIt(day.name, day.fn, day.in)
 		if err != nil {
