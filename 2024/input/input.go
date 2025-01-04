@@ -2,6 +2,7 @@
 package input
 
 import (
+	"bytes"
 	"io"
 	"log"
 	"os"
@@ -15,4 +16,28 @@ func Reader(inFile string) io.ReadCloser {
 		log.Fatalf("failed to open file %s: %s", inFile, err)
 	}
 	return in
+}
+
+// SplitOnDoubleCR implements Splitfunc for the scanner. https://pkg.go.dev/bufio#SplitFunc
+// It will split the input on blank lines, that is, two carriage returns
+func SplitOnDoubleCR(data []byte, atEOF bool) (advance int, token []byte, err error) {
+	if atEOF && len(data) == 0 {
+		return 0, nil, nil // should this return ErrFinalToken?
+	}
+
+	// Find the next double newline
+	splitToken := []byte("\n\n")
+	if i := bytes.Index(data, splitToken); i >= 0 {
+		// We found a double carriage return.
+		// Return the token up to that point.
+		return i + len(splitToken), data[:i], nil
+	}
+
+	// If we're at EOF, we have a final, non-terminated line. Return it.
+	if atEOF {
+		return len(data), data, nil
+	}
+
+	// Request more data.
+	return 0, nil, nil
 }
