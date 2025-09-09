@@ -132,3 +132,61 @@ func TestExampleInstruction5(t *testing.T) {
 
 	assert.Equal(t, 44354, c.RegisterB())
 }
+
+func Part2Example() io.Reader {
+	return strings.NewReader(`Register A: 2024
+Register B: 0
+Register C: 0
+
+Program: 0,3,5,4,3,0`)
+}
+
+func TestSolvePart2Example(t *testing.T) {
+	// sanity checks
+	computer, err := day17.ParseIn(Part2Example())
+	require.NoError(t, err)
+	assert.Equal(t, []uint8{0, 3, 5, 4, 3, 0}, computer.GetData())
+	assert.Equal(t, "0,3,5,4,3,0", computer.Program.DataString())
+
+	out, err := day17.SolvePart2BruteForce(Part2Example())
+	require.NoError(t, err)
+
+	// Answer
+	assert.Equal(t, 117440, out)
+}
+
+func TestSolvePart2(t *testing.T) {
+	inFile := "./input.txt"
+	in, err := os.Open(inFile)
+	require.NoError(t, err)
+
+	out, err := day17.SolvePart2BruteForce(in) // TOO SLOW
+
+	require.NoError(t, err)
+	assert.Equal(t, "?", out)
+}
+
+func TestSolvePart2Example_3(t *testing.T) {
+	// sanity checks
+	computer, err := day17.ParseIn(Part2Example())
+	require.NoError(t, err)
+	assert.Equal(t, []uint8{0, 3, 5, 4, 3, 0}, computer.GetData())
+	assert.Equal(t, "0,3,5,4,3,0", computer.Program.DataString())
+
+	out, err := day17.SolvePart2Dynamic(Part2Example())
+	require.NoError(t, err)
+
+	// Answer
+	assert.Equal(t, 117440, out)
+}
+
+// func TestSolvePart2_3(t *testing.T) {
+// 	inFile := "./input.txt"
+// 	in, err := os.Open(inFile)
+// 	require.NoError(t, err)
+//
+// 	out, err := day17.SolvePart2BruteForce(in) // TOO SLOW
+//
+// 	require.NoError(t, err)
+// 	assert.Equal(t, "?", out)
+// }

@@ -5,6 +5,7 @@ import (
 	"bufio"
 	"fmt"
 	"io"
+	"iter"
 	"log"
 	"regexp"
 	"strconv"
@@ -23,6 +24,232 @@ func SolvePart1(in io.Reader) (string, error) {
 	return out, nil
 }
 
+// TODO: Start here... try producing fewer options. specifically, try powers of 2, or some close variation on that.
+// need to determine which changes have any actual effect...
+// Could try printing out the startin values before and after any actual change in the output to get a clearer idea
+
+// Candidates
+func Candidates() iter.Seq[int] {
+	return func(yield func(int) bool) {
+		// This produces numbers with trailing 0111110100
+		i := 14836
+		j := 15860
+		for {
+			if i < j {
+				i += 16384
+				// fmt.Println("yielding", i)
+				if !yield(i) {
+					return
+				}
+			} else {
+				j += 16384
+				// fmt.Println("yielding", j)
+				if !yield(j) {
+					return
+				}
+			}
+
+			// but now another constraint for numbers like this...
+			// 101001000100011010101011110111110100
+
+			// 101001000000000000000000000000000000 = 44023414784
+
+			// produce numbers with these bits set
+			// 101001000000000000000000000000000000
+			// AND last digits 0111110100
+			// can safely do only numbers larger than this one.
+			//
+			//
+			// e.g.
+
+			// 		i := 0
+			//
+			// 		for {
+			// 			// if i%1024 != 500 {
+			// 			// looks like number has to end with 0111110100 == 500
+			//
+			// 			if i%16384 != 15860 && i%16384 != 14836 {
+			// 				// 11100111110100 = 14836
+			// 				// 11110111110100 = 15860
+			// 				i++
+			// 				continue
+			// 			}
+			//
+			// 			fmt.Println("yielding", i)
+			//
+			// 			if !yield(i) {
+			// 				return
+			// 			}
+			// 			i++
+			//
+			// 		}
+			//     yielding 14836
+			// yielding 15860
+			// yielding 31220
+			// yielding 32244
+			// yielding 47604
+			// yielding 48628
+			// yielding 63988
+			// yielding 65012
+			// yielding 80372
+			// yielding 81396
+			// yielding 96756
+			// yielding 97780
+			// yielding 113140
+			// yielding 114164
+			// yielding 129524
+			// yielding 130548
+			// yielding 145908
+			// yielding 146932
+			// yielding 162292
+			// yielding 163316
+		}
+	}
+}
+
+func SolvePart2BruteForce(in io.Reader) (int, error) {
+	computer, err := ParseIn(in)
+	if err != nil {
+		return 0, fmt.Errorf("error loading input: %w", err)
+	}
+
+	// try printing starting values that successfully output the first value... look for patterns
+
+	// i := 10000000
+	// i = 151100000
+	out := 0
+	for i := range Candidates() {
+		out = i
+
+		// fmt.Println("trying:", i)
+
+		// fmt.Println("data", computer.Program.DataString())
+
+		//
+		computer.Reset()
+		computer.SetRegisterA(i)
+		out := computer.RunProgram2(computer.Program.DataString())
+		// out := computer.RunProgram()
+		// fmt.Println("out", out)
+		if out == computer.Program.DataString() {
+			// fmt.Println("success!", i)
+			// fmt.Println("out:", out)
+			// fmt.Println("original:", computer.Program.DataString())
+			break
+		}
+
+		if i%1_000_000_000 == 0 {
+			fmt.Println("progress:", i)
+		}
+
+		// if i > 100_000_000_000 {
+		// 	break // only do 10million for now
+		// }
+
+	}
+
+	return out, nil
+}
+
+func SolvePart2Dynamic(in io.Reader) (int, error) {
+	// TODO: idea is to try this with dynamic programming.
+	// - recursive is one option
+	// 	 - Check if you have the answer for the current state of the problem. Return if so
+	// 	 - If not, compute the outcome for the current state, and save it before returning it
+	// 	 - ... so what is likely being re-calculated? ... 🤔
+	// 	 -
+	// - ground up is the other
+	//
+	//
+	// I just read through Reddit though, and it seems like it's more about noticing the pattern of the
+	// the program, and which values you can skip/should try...
+
+	computer, err := ParseIn(in)
+	if err != nil {
+		return 0, fmt.Errorf("error loading input: %w", err)
+	}
+
+	out := 0
+	for i := range Candidates() {
+		out = i
+		// fmt.Println("trying:", i)
+
+		computer.Reset()
+		computer.SetRegisterA(i)
+		out := computer.RunProgram2(computer.Program.DataString())
+		// out := computer.RunProgram()
+		// fmt.Println("out", out)
+		if out == computer.Program.DataString() {
+			// fmt.Println("success!", i)
+			// fmt.Println("out:", out)
+			// fmt.Println("original:", computer.Program.DataString())
+			break
+		}
+
+		if i%1_000_000_000 == 0 {
+			fmt.Println("progress:", i)
+		}
+
+		// if i > 100_000_000_000 {
+		// 	break // only do 10million for now
+		// }
+
+	}
+
+	return out, nil
+}
+
+func SolvePart2LogicMyProgram(in io.Reader) (int, error) {
+	// Program: 2,4,1,2,7,5,1,3,4,3,5,5,0,3,3,0
+
+	// first action
+	// - idx: 0
+	// - code: 2 - Bst
+	// - operand: Register A! - % 8 -> Register B: 4...     X % 8 -> Y
+	//
+	// - This implies differences for the last 8 bits of register A... only 8 though
+	//
+	// Second action
+	// - idx: 2
+	// - code: 1 -  Bxl
+	// - operand: 2 -> Register B ^ 2 -> 4 XOR 2 = 6...   Y XOR 2
+	//
+	// so register B gets: X % 8 then XOR 2
+	//
+	// Third action
+	// - idx: 4
+	// - code: 7 - Cdv -> READ REGISTER A! / 2^0 = Register A -> Register C
+	// - oprand 5 - Reg B
+	//
+	// register C gets: X / 2^(Reg B) here reg B is 0 to 7, so 1, 2, 4, 8, 16, 32, 64, 128
+	// - and whole number result gets stored... so meaningful differences in register A
+	//   would require a low % 8, or big jumps. if % 8 = 7, Reg C only changes every 128 X values
+
+	// Fourth action
+	// - idx: 6
+	// - code: 1 - Bxl
+	// - operand: 3 -> Register B ^ 3 -> Reg B
+	//
+	// so register B gets: X % 8 then XOR 2 then XOR 3 or X % 8 XOR 1
+
+	// Fifth action
+	// - idx: 8
+	// - code: 4 - Bxc - Reg B XOR Reg C -> Reg B
+	// - operand: 3 ignored.   (X % 8 XOR 1) XOR ( X / 2^Reg B), where Reg B is 0 to 7
+
+	// Sixth action
+	// - idx: 8
+	// - code: 5 - Out
+	// - operand: 5 -> Reg B % 8 gets output. MUST BE 2! as it's the first value
+
+	// 2 = ((X % 8 XOR 1) XOR ( X / 2^Reg B), where Reg B is 0 to 7) % 8
+	//
+	// Reg B 0 to 7 means 1, 2, 4, 8, 16, 32, 64, 128
+	// Reg B means
+
+	return 0, nil
+}
+
 type (
 	Instruction func(*Computer, byte)
 	OpCode      uint8 // this is really 0 to 7... use byte?
@@ -31,6 +258,14 @@ type (
 type Program struct {
 	instructionIdx int // the instruction pointer to keep up to date as we process
 	data           []uint8
+}
+
+func (p *Program) DataString() string {
+	output := ""
+	for _, val := range p.data {
+		output += strconv.Itoa(int(val)) + ","
+	}
+	return strings.Trim(output, ",")
 }
 
 // GetInstruction returns the instruction based on the opcode.
@@ -61,11 +296,18 @@ func (p *Program) Next() uint8 {
 }
 
 type Computer struct {
+	startingA int
+	newOut    bool
+	reset     func(*Computer)
 	registerA int
 	registerB int
 	registerC int
 	out       string
 	Program   *Program
+}
+
+func (c *Computer) Reset() {
+	c.reset(c)
 }
 
 func (c *Computer) String() string {
@@ -78,12 +320,66 @@ C: %d
 out: %s`, c.Program.data, c.Program.instructionIdx, c.registerA, c.registerB, c.registerC, c.out)
 }
 
+func (c *Computer) SetRegisterA(in int) {
+	c.startingA = in
+	c.registerA = in
+}
+
 func (c *Computer) RunProgram() string {
 	for c.Program.instructionIdx < len(c.Program.data) {
-		// fmt.Println("computer state looks like this:", c)
+		fmt.Println("computer state looks like this:", c)
 		code := OpCode(c.Program.Next())
 		operand := c.Program.Next()
 		c.Program.GetInstruction(code)(c, operand)
+	}
+	return c.Result()
+}
+
+func (c *Computer) RunProgram3(answer string) string {
+	// check if we're done
+	for c.Program.instructionIdx < len(c.Program.data) {
+
+		// create a map key that includes all the information about the current
+		// starting state
+		//
+		// compute the result of that starting state, and store it
+		// - result is anythig output and where to jump to
+		//
+		//
+		fmt.Println("computer state looks like this:", c)
+		code := OpCode(c.Program.Next())
+		operand := c.Program.Next()
+		c.Program.GetInstruction(code)(c, operand)
+	}
+	return c.Result()
+}
+
+func (c *Computer) RunProgram2(answer string) string {
+	for c.Program.instructionIdx < len(c.Program.data) {
+		// fmt.Println("computer state looks like this:", c)
+
+		code := OpCode(c.Program.Next())
+		operand := c.Program.Next()
+		c.Program.GetInstruction(code)(c, operand)
+		if !strings.HasPrefix(answer, c.Result()) {
+			return "fail"
+			// } else if c.newOut && c.Result() != "" && len(c.Result()) > 15 {
+		} else if c.newOut && c.Result() != "" && len(c.Result()) > 19 {
+			// 			fmt.Printf(`startingA: %b
+			// startingA mod 8: %v
+			// answer so far: %v
+			// `, c.startingA, c.startingA%8, c.Result())
+
+			fmt.Printf(`startingA: %64b - %16d - %v - answer so far: %v
+`, c.startingA, c.startingA, c.startingA%16384, c.Result())
+
+			// experimenting with 3rd value...
+			//
+			// Try subtracting powers of 2 from the decimal value to see if it's consistent offset/jumps
+			//
+			// fmt.Println("computer state looks like this:", c)
+			c.newOut = false
+		}
 	}
 	return c.Result()
 }
@@ -153,6 +449,7 @@ func Bxc(c *Computer, _ byte) {
 // outputs that value. (If a program outputs multiple values, they are separated by commas.)
 func Out(c *Computer, operand byte) {
 	c.out += fmt.Sprintf("%d,", c.combo(operand)%8) //nolint:mnd // magic computer in general!
+	c.newOut = true
 }
 
 // Bdv instruction (opcode 6) works exactly like the adv instruction except that the result
@@ -228,6 +525,13 @@ func ParseIn(in io.Reader) (*Computer, error) {
 
 func NewComputer(regA, regB, regC int, data []uint8) *Computer {
 	return &Computer{
+		reset: func(c *Computer) {
+			c.registerA = regA
+			c.registerB = regB
+			c.registerC = regC
+			c.out = ""
+			c.Program.instructionIdx = 0
+		},
 		registerA: regA,
 		registerB: regB,
 		registerC: regC,
@@ -235,5 +539,11 @@ func NewComputer(regA, regB, regC int, data []uint8) *Computer {
 			instructionIdx: 0,
 			data:           data,
 		},
+	}
+}
+
+func iterateThrough() {
+	for i := range 10 {
+		fmt.Println("i is", i)
 	}
 }
