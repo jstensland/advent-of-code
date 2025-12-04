@@ -1,11 +1,14 @@
 ---
-name: build 2024
+name: Build Push
 
 on: [push]
 
 jobs:
   lint:
     runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        year: [2024, 2025]
     steps:
       - uses: actions/checkout@v4
         with:
@@ -14,33 +17,25 @@ jobs:
       - name: Set up Go
         uses: actions/setup-go@v5
         with:
-          go-version-file: "./2024/go.mod"
+          go-version-file: "./${{ matrix.year }}/go.mod"
           check-latest: true
 
       - name: install deps
         uses: golangci/golangci-lint-action@v9
         with:
           install-only: true
-          version: latest # last known good v2.6.2
+          version: latest
+          working-directory: ./${{ matrix.year }}
 
-      - name: lint all years
-        run: |
-          for year in */go.mod; do
-            year_dir=$(dirname "$year")
-            echo "Linting $year_dir..."
-            cd "$year_dir" && golangci-lint run ./... && cd ..
-          done
-
-      - name: test all years
-        run: |
-          for year in */go.mod; do
-            year_dir=$(dirname "$year")
-            echo "Testing $year_dir..."
-            cd "$year_dir" && go test ./... && cd ..
-          done
+      - name: lint ${{ matrix.year }}
+        run: golangci-lint run ./...
+        working-directory: ./${{ matrix.year }}
 
   test:
     runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        year: [2024, 2025]
     steps:
       - uses: actions/checkout@v4
         with:
@@ -49,13 +44,9 @@ jobs:
       - name: Set up Go
         uses: actions/setup-go@v5
         with:
-          go-version-file: "./2024/go.mod"
+          go-version-file: "./${{ matrix.year }}/go.mod"
           check-latest: true
 
-      - name: test all years
-        run: |
-          for year in */go.mod; do
-            year_dir=$(dirname "$year")
-            echo "Testing $year_dir..."
-            cd "$year_dir" && go test ./... && cd ..
-          done
+      - name: test ${{ matrix.year }}
+        run: go test ./...
+        working-directory: ./${{ matrix.year }}
