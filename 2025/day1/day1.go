@@ -86,27 +86,19 @@ func MoveLeft(pos, num int) (int, int) {
 
 	virtualPosition := pos - num
 
-	switch {
-	case virtualPosition > 0:
-		finalPosition = virtualPosition
-		zeros = 0
-	case virtualPosition == 0:
-		finalPosition = virtualPosition
-		zeros = 1
-	case virtualPosition < 0:
-		// you passed zero, unless you started on it
-		if pos != 0 {
-			zeros++
-		}
-		zeros += -virtualPosition / positionsTotal
-
-		// land on zero?
-		if (virtualPosition)%positionsTotal == 0 {
-			finalPosition = (virtualPosition) % positionsTotal
-		} else {
-			finalPosition = (virtualPosition)%positionsTotal + positionsTotal
-		}
+	// determine final position
+	finalPosition = virtualPosition % positionsTotal
+	if finalPosition < 0 {
+		finalPosition += positionsTotal
 	}
+
+	// determine number of zeros passed, including final position
+	if virtualPosition <= 0 && pos != 0 {
+		// reached zero on first move
+		zeros++
+	}
+	zeros += (-virtualPosition / positionsTotal) // added rotations
+
 	return finalPosition, zeros
 }
 
