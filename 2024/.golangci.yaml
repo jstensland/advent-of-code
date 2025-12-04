@@ -1,0 +1,106 @@
+version: "2"
+run:
+  allow-parallel-runners: true
+linters:
+  default: all
+  disable:
+    - depguard
+    - exhaustruct
+    - forcetypeassert
+    - godot
+    - godox # we use TODO comments sometimes if they have a ticket associated
+    - gomoddirectives
+    - gomodguard
+    - nlreturn # don't touch whitespace beyond what formatters do
+    - noinlineerr # non-idiomatic
+    - nonamedreturns
+    - paralleltest
+    - varnamelen
+    - wsl # don't touch whitespace beyond what formatters do
+    - wsl_v5 # don't touch whitespace beyond what formatters do
+    # disabled as newly failing after update, but may want to address eventually
+    - embeddedstructfieldcheck
+    - forbidigo
+    - funcorder
+    - godoclint
+    - mnd
+    - modernize
+    - perfsprint
+  settings:
+    errcheck:
+      check-type-assertions: true
+      check-blank: true
+      exclude-functions:
+        - fmt.Fprint
+        - fmt.Fprintf
+        - fmt.Fprintln
+    funlen:
+      lines: -1
+    gosec:
+      excludes:
+        - G307
+    revive:
+      rules:
+        - name: blank-imports
+        - name: context-as-argument
+        - name: context-keys-type
+        - name: dot-imports
+        - name: empty-block
+        - name: error-naming
+        - name: error-return
+        - name: error-strings
+        - name: errorf
+        - name: exported
+          disabled: true
+        - name: increment-decrement
+        - name: indent-error-flow
+        - name: package-comments
+          disabled: true
+        - name: range
+        - name: receiver-naming
+        - name: redefines-builtin-id
+        - name: superfluous-else
+        - name: time-naming
+        - name: unexported-return
+        - name: unreachable-code
+        - name: unused-parameter
+        - name: var-declaration
+        - name: var-naming
+  exclusions:
+    generated: lax
+    rules:
+      - linters:
+          - goconst
+        path: (.+)_test\.go
+    paths:
+      - vendor
+      - third_party$
+      - builtin$
+      - examples$
+formatters:
+  enable:
+    - gofmt
+    - gofumpt
+    - goimports
+    - golines
+  settings:
+    gci:
+      sections:
+        - standard
+        - default
+        - prefix(github.com/jstensland)
+    goimports:
+      local-prefixes:
+        - github.com/jstensland
+        - advent2024
+    gofumpt:
+      extra-rules: true
+    golines:
+      max-len: 120 # match lll default
+  exclusions:
+    generated: lax
+    paths:
+      - vendor
+      - third_party$
+      - builtin$
+      - examples$

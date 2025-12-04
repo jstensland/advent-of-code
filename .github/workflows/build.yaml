@@ -18,13 +18,23 @@ jobs:
           check-latest: true
 
       - name: install deps
+        uses: golangci/golangci-lint-action
+        with:
+          install-only: true
+          version: latest # last known good v2.6.2
+
+      - name: lint all years
         run: |
-          curl -sSfL https://raw.githubusercontent.com/golangci/golangci-lint/master/install.sh | sh -s -- -b "$(go env GOPATH)/bin" "$GOLANGCI_LINT_VERSION"
-        env:
-          GOLANGCI_LINT_VERSION: latest # often will pin... last known good v1.62.2
+          for year in */go.mod; do
+            year_dir=$(dirname "$year")
+            echo "Linting $year_dir..."
+            cd "$year_dir" && golangci-lint run ./... && cd ..
+          done
 
-      - name: lint 2024
-        run: cd 2024 && golangci-lint run ./...
-
-      - name: test 2024
-        run: cd 2024 && go test ./...
+      - name: test all years
+        run: |
+          for year in */go.mod; do
+            year_dir=$(dirname "$year")
+            echo "Testing $year_dir..."
+            cd "$year_dir" && go test ./... && cd ..
+          done

@@ -145,7 +145,6 @@ func SolvePart2BruteForce(in io.Reader) (int, error) {
 		// if i > 100_000_000_000 {
 		// 	break // only do 10million for now
 		// }
-
 	}
 
 	return out, nil
@@ -162,7 +161,7 @@ func SolvePart2Dynamic(in io.Reader) (int, error) {
 	//
 	//
 	// I just read through Reddit though, and it seems like it's more about noticing the pattern of the
-	// the program, and which values you can skip/should try...
+	// program, and which values you can skip/should try...
 
 	computer, err := ParseIn(in)
 	if err != nil {
@@ -193,13 +192,12 @@ func SolvePart2Dynamic(in io.Reader) (int, error) {
 		// if i > 100_000_000_000 {
 		// 	break // only do 10million for now
 		// }
-
 	}
-
 	return out, nil
 }
 
 func SolvePart2LogicMyProgram(in io.Reader) (int, error) {
+	_ = in
 	// Program: 2,4,1,2,7,5,1,3,4,3,5,5,0,3,3,0
 
 	// first action
@@ -306,6 +304,25 @@ type Computer struct {
 	Program   *Program
 }
 
+func NewComputer(regA, regB, regC int, data []uint8) *Computer {
+	return &Computer{
+		reset: func(c *Computer) {
+			c.registerA = regA
+			c.registerB = regB
+			c.registerC = regC
+			c.out = ""
+			c.Program.instructionIdx = 0
+		},
+		registerA: regA,
+		registerB: regB,
+		registerC: regC,
+		Program: &Program{
+			instructionIdx: 0,
+			data:           data,
+		},
+	}
+}
+
 func (c *Computer) Reset() {
 	c.reset(c)
 }
@@ -335,10 +352,9 @@ func (c *Computer) RunProgram() string {
 	return c.Result()
 }
 
-func (c *Computer) RunProgram3(answer string) string {
+func (c *Computer) RunProgram3(_ string) string {
 	// check if we're done
 	for c.Program.instructionIdx < len(c.Program.data) {
-
 		// create a map key that includes all the information about the current
 		// starting state
 		//
@@ -521,29 +537,4 @@ func ParseIn(in io.Reader) (*Computer, error) {
 	}
 
 	return NewComputer(regAVal, regBVal, regCVal, data), nil
-}
-
-func NewComputer(regA, regB, regC int, data []uint8) *Computer {
-	return &Computer{
-		reset: func(c *Computer) {
-			c.registerA = regA
-			c.registerB = regB
-			c.registerC = regC
-			c.out = ""
-			c.Program.instructionIdx = 0
-		},
-		registerA: regA,
-		registerB: regB,
-		registerC: regC,
-		Program: &Program{
-			instructionIdx: 0,
-			data:           data,
-		},
-	}
-}
-
-func iterateThrough() {
-	for i := range 10 {
-		fmt.Println("i is", i)
-	}
 }
