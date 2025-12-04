@@ -4,7 +4,7 @@ name: build 2024
 on: [push]
 
 jobs:
-  build:
+  lint:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -30,6 +30,27 @@ jobs:
             echo "Linting $year_dir..."
             cd "$year_dir" && golangci-lint run ./... && cd ..
           done
+
+      - name: test all years
+        run: |
+          for year in */go.mod; do
+            year_dir=$(dirname "$year")
+            echo "Testing $year_dir..."
+            cd "$year_dir" && go test ./... && cd ..
+          done
+
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Set up Go
+        uses: actions/setup-go@v5
+        with:
+          go-version-file: "./2024/go.mod"
+          check-latest: true
 
       - name: test all years
         run: |

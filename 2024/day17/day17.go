@@ -427,7 +427,7 @@ func (c *Computer) combo(operand byte) int {
 // The numerator is the value in the A register.
 // The denominator is found by raising 2 to the power of the instruction's combo operand.
 func Adv(c *Computer, operand byte) {
-	c.registerA /= 1 << uint(c.combo(operand)) //nolint:gosec // guarding against values that are too large when parsing
+	c.registerA /= 1 << uint(c.combo(operand))
 }
 
 // Bxl instruction (opcode 1) calculates the bitwise XOR of register B and the instruction's
@@ -441,7 +441,7 @@ func Bxl(c *Computer, operand byte) {
 func Bst(c *Computer, operand byte) {
 	// fmt.Println("combo operand", c.combo(operand))
 
-	c.registerB = c.combo(operand) % 8 //nolint:mnd // magic computer in general!
+	c.registerB = c.combo(operand) % 8
 }
 
 // Jnz instruction (opcode 3) does nothing if the A register is 0. However, if the
@@ -471,13 +471,13 @@ func Out(c *Computer, operand byte) {
 // Bdv instruction (opcode 6) works exactly like the adv instruction except that the result
 // is stored in the B register. (The numerator is still read from the A register.)
 func Bdv(c *Computer, operand byte) {
-	c.registerB = c.registerA / (1 << uint(c.combo(operand))) //nolint:gosec // guarding against values that are too large
+	c.registerB = c.registerA / (1 << uint(c.combo(operand)))
 }
 
 // Cdv instruction (opcode 7) works exactly like the adv instruction except that the result
 // is stored in the C register. (The numerator is still read from the A register.)
 func Cdv(c *Computer, operand byte) {
-	c.registerC = c.registerA / (1 << uint(c.combo(operand))) //nolint:gosec // guarding against values that are too large
+	c.registerC = c.registerA / (1 << uint(c.combo(operand)))
 }
 
 // ParseIn reads in all the games. For solving.
@@ -529,7 +529,7 @@ func ParseIn(in io.Reader) (*Computer, error) {
 			if err != nil || val > 255 {
 				return nil, fmt.Errorf("error parsing program data: %w", err)
 			}
-			data = append(data, uint8(val)) //nolint:gosec // guarding against values that are too large
+			data = append(data, uint8(val))
 		}
 	}
 	if err := scanner.Err(); err != nil {
