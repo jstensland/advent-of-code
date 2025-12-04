@@ -18,6 +18,7 @@ jobs:
         uses: actions/setup-go@v5
         with:
           go-version-file: "./${{ matrix.year }}/go.mod"
+          cache-dependency-path: "./${{ matrix.year }}/go.sum"
           check-latest: true
 
       - name: install deps
@@ -45,6 +46,7 @@ jobs:
         uses: actions/setup-go@v5
         with:
           go-version-file: "./${{ matrix.year }}/go.mod"
+          cache-dependency-path: "./${{ matrix.year }}/go.sum"
           check-latest: true
 
       - name: test ${{ matrix.year }}
