@@ -18,7 +18,7 @@ jobs:
           check-latest: true
 
       - name: install deps
-        uses: golangci/golangci-lint-action
+        uses: golangci/golangci-lint-action@v9
         with:
           install-only: true
           version: latest # last known good v2.6.2
