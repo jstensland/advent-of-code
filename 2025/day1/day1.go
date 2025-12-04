@@ -8,21 +8,6 @@ import (
 	"strconv"
 )
 
-// Direction represents the rotation direction.
-type Direction int
-
-const (
-	Left Direction = iota
-	Right
-)
-
-func (d Direction) String() string {
-	return map[Direction]string{
-		Left:  "Left",
-		Right: "Right",
-	}[d]
-}
-
 const (
 	startingPosition = 50
 	positionsTotal   = 100
@@ -30,8 +15,7 @@ const (
 
 // Move represents a rotation and distance for the safe.
 type Move struct {
-	Direction Direction
-	Distance  int
+	Distance int // negative means left
 }
 
 // Dial represents the current position of the safe's dial.
@@ -44,39 +28,17 @@ func NewDial() *Dial {
 	return &Dial{position: startingPosition}
 }
 
-// Move updates the dial position based on the move.
-// Right moves up (increases position), Left moves down (decreases position).
-// The dial loops from 0 to 99.
-func (d *Dial) Move(m Move) {
-	if m.Direction == Right {
-		d.position = (d.position + m.Distance) % positionsTotal
-	} else {
-		d.position = (d.position - m.Distance) % positionsTotal
-		if d.position < 0 {
-			d.position += positionsTotal
-		}
-	}
-}
-
 func (d *Dial) MoveV2(m Move) int {
 	var zeros int
-	if m.Direction == Right {
-		d.position, zeros = MoveRight(d.position, m.Distance)
-	} else {
-		d.position, zeros = MoveLeft(d.position, m.Distance)
-	}
+	d.position, zeros = MoveDial(d.position, m.Distance)
 	return zeros
 }
 
-func MoveRight(pos, num int) (int, int) {
-	return MovePosition(pos, num), MoveZeros(pos, num)
+func MoveDial(pos, num int) (int, int) {
+	return movePosition(pos, num), moveZeros(pos, num)
 }
 
-func MoveLeft(pos, num int) (int, int) {
-	return MovePosition(pos, -num), MoveZeros(pos, -num)
-}
-
-func MovePosition(pos, num int) int {
+func movePosition(pos, num int) int {
 	finalPosition := (pos + num) % positionsTotal
 	if finalPosition < 0 {
 		finalPosition += positionsTotal
@@ -84,7 +46,7 @@ func MovePosition(pos, num int) int {
 	return finalPosition
 }
 
-func MoveZeros(pos, num int) int {
+func moveZeros(pos, num int) int {
 	zeros := 0
 	virtualPosition := pos + num
 	if virtualPosition <= 0 && pos != 0 {
@@ -117,7 +79,7 @@ func Part1(r io.Reader) (int, error) {
 	count := 0
 
 	for _, move := range moves {
-		dial.Move(move)
+		_ = dial.MoveV2(move)
 		if dial.Position() == 0 {
 			count++
 		}
@@ -137,7 +99,7 @@ func Part2(r io.Reader) (int, error) {
 
 	for _, move := range moves {
 		count += dial.MoveV2(move)
-		fmt.Printf("Move: %v position: %v count: %v \n", move, dial.Position(), count)
+		// fmt.Printf("Move: %v position: %v count: %v \n", move, dial.Position(), count)
 	}
 
 	return count, nil
@@ -148,20 +110,11 @@ func ParseMoves(r io.Reader) ([]Move, error) {
 	var moves []Move
 	scanner := bufio.NewScanner(r)
 
+	const minLineLen = 2
 	for scanner.Scan() {
 		line := scanner.Text()
-		if len(line) < 2 {
+		if len(line) < minLineLen {
 			continue
-		}
-
-		var direction Direction
-		switch line[0] {
-		case 'L':
-			direction = Left
-		case 'R':
-			direction = Right
-		default:
-			return nil, fmt.Errorf("invalid direction: %c", line[0])
 		}
 
 		distance, err := strconv.Atoi(line[1:])
@@ -169,9 +122,16 @@ func ParseMoves(r io.Reader) ([]Move, error) {
 			return nil, fmt.Errorf("invalid distance in line %q: %w", line, err)
 		}
 
+		switch line[0] {
+		case 'L':
+			distance = -distance
+		case 'R':
+		default:
+			return nil, fmt.Errorf("invalid direction: %c", line[0])
+		}
+
 		moves = append(moves, Move{
-			Direction: direction,
-			Distance:  distance,
+			Distance: distance,
 		})
 	}
 
