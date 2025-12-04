@@ -69,37 +69,37 @@ func (d *Dial) MoveV2(m Move) int {
 }
 
 func MoveRight(pos, num int) (int, int) {
-	virtualPosition := pos + num
-	position := (virtualPosition) % positionsTotal
-	rotations := virtualPosition / positionsTotal
-	return position, rotations
+	return MovePosition(pos, num), MoveZeros(pos, num)
 }
 
 func MoveLeft(pos, num int) (int, int) {
-	// 40 - 5 = 35
-	// 40 - 40 = 0
-	// 40 - 45 = -5
-	// 40 - 400 = -440
-	// 40 - 440 = -400
-	var finalPosition int
-	var zeros int
+	return MovePosition(pos, -num), MoveZeros(pos, -num)
+}
 
-	virtualPosition := pos - num
-
-	// determine final position
-	finalPosition = virtualPosition % positionsTotal
+func MovePosition(pos, num int) int {
+	finalPosition := (pos + num) % positionsTotal
 	if finalPosition < 0 {
 		finalPosition += positionsTotal
 	}
+	return finalPosition
+}
 
-	// determine number of zeros passed, including final position
+func MoveZeros(pos, num int) int {
+	zeros := 0
+	virtualPosition := pos + num
 	if virtualPosition <= 0 && pos != 0 {
-		// reached zero on first move
+		// didn't start at zero, but did reach zero on first move left
 		zeros++
 	}
-	zeros += (-virtualPosition / positionsTotal) // added rotations
+	zeros += abs(virtualPosition / positionsTotal) // added rotations
+	return zeros
+}
 
-	return finalPosition, zeros
+func abs(x int) int {
+	if x < 0 {
+		return -x
+	}
+	return x
 }
 
 // Position returns the current position of the dial.
