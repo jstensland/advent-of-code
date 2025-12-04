@@ -92,6 +92,25 @@ func GetInput(day string) error {
 	return saveInput(dayNum, body)
 }
 
+// NewDay generates boilerplate code for a new day.
+// Usage: mage newDay 3.
+func NewDay(day string) error {
+	dayNum, err := parseDay(day)
+	if err != nil {
+		return err
+	}
+
+	ctx := context.Background()
+	cmd := exec.CommandContext(ctx, "go", "run", "./cmd/daygen", "-day", strconv.Itoa(dayNum))
+	cmd.Stdout = os.Stdout
+	cmd.Stderr = os.Stderr
+
+	if err := cmd.Run(); err != nil {
+		return fmt.Errorf("failed to generate day boilerplate: %w", err)
+	}
+	return nil
+}
+
 func parseDay(day string) (int, error) {
 	dayNum, err := strconv.Atoi(day)
 	if err != nil || dayNum < 1 || dayNum > 25 {

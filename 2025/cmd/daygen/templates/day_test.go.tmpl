@@ -1,0 +1,70 @@
+package day{{.Day}}_test
+
+import (
+	"bytes"
+	"os"
+	"testing"
+
+	"github.com/stretchr/testify/assert"
+	"github.com/stretchr/testify/require"
+
+	"github.com/jstensland/advent-of-code/2025/day{{.Day}}"
+	"github.com/jstensland/advent-of-code/2025/runner"
+)
+
+var _ runner.Solver = day{{.Day}}.Part1
+
+func example1() string {
+	// TODO: add example from prompt
+	return ``
+}
+
+func TestPart1(t *testing.T) {
+	answer := 0 // TODO: update to answer
+
+	input, err := os.ReadFile("input.txt")
+	if err != nil {
+		t.Fatalf("failed to read input.txt: %v", err)
+	}
+
+	result, err := day{{.Day}}.Part1(bytes.NewReader(input))
+	require.NoError(t, err)
+
+	if result != answer {
+		assert.Equal(t, result, answer)
+	}
+}
+
+func TestPart1_Example1(t *testing.T) {
+	answer := 0 // TODO: update to answer
+	result, err := day{{.Day}}.Part1(bytes.NewReader([]byte(example1())))
+	if err != nil {
+		t.Fatalf("Part1 failed: %v", err)
+	}
+
+	assert.Equal(t, answer, result)
+}
+
+func TestPart2(t *testing.T) {
+	answer := 0 // TODO: update to answer
+	input, err := os.ReadFile("input.txt")
+	if err != nil {
+		t.Fatalf("failed to read input.txt: %v", err)
+	}
+
+	result, err := day{{.Day}}.Part2(bytes.NewReader(input))
+	require.NoError(t, err)
+
+	if result != answer {
+		assert.Equal(t, answer, result)
+	}
+}
+
+func TestPart2_Example1(t *testing.T) {
+	answer := 0 // TODO: update to answer
+	result, err := day{{.Day}}.Part2(bytes.NewReader([]byte(example1())))
+	if err != nil {
+		t.Fatalf("Part2 failed: %v", err)
+	}
+	assert.Equal(t, answer, result)
+}

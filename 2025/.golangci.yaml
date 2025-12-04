@@ -11,14 +11,10 @@ linters:
     - exhaustruct # non-idiomatic
     - forcetypeassert # duplicative of errcheck
     - godox # we use TODO comments sometimes if they have a ticket associated
-    - gomodguard # tuning is more work than reviewing new deps for now
-    - ireturn # too many false positives with generated interfaces
-    - nlreturn # don't touch whitespace beyond what gofumpt does
+    - nlreturn # don't touch whitespace beyond what formatters do
     - noinlineerr # non-idiomatic
-    - varnamelen # requires significant tuning to handle standard practices
-    - wrapcheck # too strict for our style. We focus on public errors
-    - wsl # don't touch whitespace beyond what gofumpt does
-    - wsl_v5 # don't touch whitespace beyond what gofumpt does
+    - wsl # don't touch whitespace beyond what formatters do
+    - wsl_v5 # don't touch whitespace beyond what formatters do
 
   settings:
     errorlint:
@@ -33,8 +29,7 @@ linters:
       require-specific: true
     gosec:
       excludes:
-        - G101 # Look for hard coded credentials. Many false positives, and we won't do it.
-        - G104 # consider including, depending on how we set up other error linters
+        - G101 # Look for hard coded credentials. Many false positives.
     paralleltest:
       ignore-missing: true # package level parallel is enough usually. Just checking misuse
     revive:

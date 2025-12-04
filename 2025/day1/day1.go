@@ -136,7 +136,7 @@ func ParseMoves(r io.Reader) ([]Move, error) {
 	}
 
 	if err := scanner.Err(); err != nil {
-		return nil, err
+		return nil, fmt.Errorf("error while scanning input: %w", err)
 	}
 
 	return moves, nil
