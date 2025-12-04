@@ -1,0 +1,110 @@
+version: "2"
+run:
+  build-tags:
+    - spancheck
+linters:
+  default: all # take advantage of new linters, or linters for new tools
+  disable: # disable linter that don't match our practices. Include a reason
+    - depguard # there is not currently an allow or deny list to enforce
+    - err113 # doesn't match style guide and covered by errorlint
+    - errcheck # not required for many of our common patterns. skipped for now.
+    - exhaustruct # non-idiomatic
+    - forcetypeassert # duplicative of errcheck
+    - godox # we use TODO comments sometimes if they have a ticket associated
+    - gomodguard # tuning is more work than reviewing new deps for now
+    - ireturn # too many false positives with generated interfaces
+    - nlreturn # don't touch whitespace beyond what gofumpt does
+    - noinlineerr # non-idiomatic
+    - varnamelen # requires significant tuning to handle standard practices
+    - wrapcheck # too strict for our style. We focus on public errors
+    - wsl # don't touch whitespace beyond what gofumpt does
+    - wsl_v5 # don't touch whitespace beyond what gofumpt does
+
+  settings:
+    errorlint:
+      errorf: false # we do _not_ require %w in fmt.Errorf() as wel follow https://github.com/uber-go/guide/blob/master/style.md#error-wrapping
+      # always use IsError()/AsError() instead of assertions/comparisons
+      asserts: true
+      comparison: true
+    funlen:
+      lines: -1 # lines don't matter, just statements
+    nolintlint: # use nolint! but add a comment as to why to help review and maintenance
+      require-explanation: true
+      require-specific: true
+    gosec:
+      excludes:
+        - G101 # Look for hard coded credentials. Many false positives, and we won't do it.
+        - G104 # consider including, depending on how we set up other error linters
+    paralleltest:
+      ignore-missing: true # package level parallel is enough usually. Just checking misuse
+    revive:
+      # specify defaults and turn a few off. See the full list with
+      # GL_DEBUG=revive golangci-lint run --enable-only=revive
+      rules:
+        - name: blank-imports
+        - name: context-as-argument
+        - name: context-keys-type
+        - name: dot-imports
+        - name: empty-block
+        - name: error-naming
+        - name: error-return
+        - name: error-strings
+        - name: errorf
+        - name: exported
+          disabled: true
+        - name: increment-decrement
+        - name: indent-error-flow
+        - name: package-comments
+          disabled: true
+        - name: range
+        - name: receiver-naming
+        - name: redefines-builtin-id
+        - name: superfluous-else
+        - name: time-naming
+        - name: unexported-return
+        - name: unreachable-code
+        - name: unused-parameter
+        - name: var-declaration
+        - name: var-naming
+    spancheck:
+      checks:
+        - end
+        - record-error
+        - set-status
+    sloglint:
+      context: all
+      no-global: ""
+      key-naming-case: snake
+      msg-style: lowercased
+
+  exclusions:
+    generated: lax
+    paths:
+      - third_party$
+      - builtin$
+      - examples$
+formatters:
+  enable:
+    - gci
+    - gofumpt
+    - goimports
+    - golines
+  settings:
+    gci:
+      sections:
+        - standard
+        - default
+        - prefix(github.com/jstensland)
+    goimports:
+      local-prefixes:
+        - github.com/jstensland
+    gofumpt:
+      extra-rules: true
+    golines:
+      max-len: 120 # match lll default
+  exclusions:
+    generated: lax
+    paths:
+      - third_party$
+      - builtin$
+      - examples$
