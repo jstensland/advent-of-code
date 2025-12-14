@@ -13,6 +13,7 @@ linters:
     - godox # we use TODO comments sometimes if they have a ticket associated
     - nlreturn # don't touch whitespace beyond what formatters do
     - noinlineerr # non-idiomatic
+    - varnamelen # often short makes sense
     - wsl # don't touch whitespace beyond what formatters do
     - wsl_v5 # don't touch whitespace beyond what formatters do
 
