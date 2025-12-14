@@ -24,14 +24,16 @@ func Part1(r io.Reader) (int, error) {
 }
 
 func Part2(r io.Reader) (int, error) {
-	answer := 0
-	_, err := ParseIn(r)
+	banks, err := ParseIn(r)
 	if err != nil {
 		return 0, err
 	}
-	// TODO: solve part 2
+	total := 0
+	for _, bank := range banks {
+		total += Biggest12(bank)
+	}
 
-	return answer, nil
+	return total, nil
 }
 
 func Biggest(r Bank) int {
@@ -60,5 +62,61 @@ func Biggest(r Bank) int {
 	if err != nil {
 		panic(err)
 	}
+	return out
+}
+
+func Biggest12(r Bank) int {
+	// initialize the answer with the furthers right 12 numbers
+	const onBatteries = 12
+	// answer := make([]int, onBatteries)
+	answer := r[len(r)-onBatteries:]
+	// iterate through each new left digit, returning a new answer
+	// after considering each
+	for idx := range r {
+		if idx < onBatteries {
+			continue
+		}
+
+		answer = Bigger(r[len(r)-idx-1], answer)
+	}
+	return convert(answer)
+}
+
+func convert(row []int) int {
+	strval := ""
+	for _, val := range row {
+		strval += strconv.Itoa(val)
+	}
+	out, err := strconv.Atoi(strval)
+	if err != nil {
+		panic(err)
+	}
+	return out
+}
+
+func Bigger(num int, current []int) []int {
+	if len(current) == 0 {
+		// if current has zero length, return the original
+		return current
+	}
+	if num < current[0] {
+		// if num is smaller than the left most digit. return the original
+		return current
+	}
+
+	// if it's bigger or equal
+	//
+	// replace the first digit with that one, and pass the old first digit to the right
+	// asking if it makes the number to the right bigger
+	oldFirst := current[0]
+	current[0] = num
+	remaining := Bigger(oldFirst, current[1:])
+
+	// use the remaining result for the rest of the current
+	for idx := range remaining {
+		current[idx+1] = remaining[idx]
+	}
+	out := make([]int, len(current))
+	copy(out, current)
 	return out
 }

@@ -2,6 +2,7 @@ package day3_test
 
 import (
 	"bytes"
+	"fmt"
 	"os"
 	"testing"
 
@@ -64,7 +65,7 @@ func TestPart2_Example2(t *testing.T) {
 }
 
 func TestPart2(t *testing.T) {
-	answer := 0 // TODO: update to answer
+	answer := 173161749617495
 	input, err := os.ReadFile("input.txt")
 	if err != nil {
 		t.Fatalf("failed to read input.txt: %v", err)
@@ -80,10 +81,10 @@ func TestPart2(t *testing.T) {
 
 func TestPart2_Example1(t *testing.T) {
 	answer := 3121910778619
+
 	result, err := day3.Part2(bytes.NewReader([]byte(example1())))
-	if err != nil {
-		t.Fatalf("Part2 failed: %v", err)
-	}
+
+	require.NoError(t, err)
 	assert.Equal(t, answer, result)
 }
 
@@ -170,6 +171,96 @@ func TestBiggestPerRow(t *testing.T) {
 		t.Run(tt.name, func(t *testing.T) {
 			result := day3.Biggest(tt.row)
 			assert.Equal(t, tt.expected, result)
+		})
+	}
+}
+
+func TestBiggest12PerRow(t *testing.T) {
+	tests := []struct {
+		name     string
+		row      day3.Bank
+		expected int
+	}{
+		{
+			name:     "example1 row 1: 987654321111111",
+			row:      day3.Bank{9, 8, 7, 6, 5, 4, 3, 2, 1, 1, 1, 1, 1, 1, 1},
+			expected: 987654321111,
+		},
+		{
+			name:     "example1 row 2: 811111111111119",
+			row:      day3.Bank{8, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 9},
+			expected: 811111111119,
+		},
+		{
+			name:     "example1 row 3: 234234234234278",
+			row:      day3.Bank{2, 3, 4, 2, 3, 4, 2, 3, 4, 2, 3, 4, 2, 7, 8},
+			expected: 434234234278,
+		},
+		{
+			name:     "example1 row 4: 818181911112111",
+			row:      day3.Bank{8, 1, 8, 1, 8, 1, 9, 1, 1, 1, 1, 2, 1, 1, 1},
+			expected: 888911112111,
+		},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			result := day3.Biggest12(tt.row)
+			assert.Equal(t, tt.expected, result)
+		})
+	}
+}
+
+func TestBigger(t *testing.T) {
+	tests := []struct {
+		name    string
+		num     int
+		current []int
+		want    []int
+	}{
+		{
+			name:    "first number replacement",
+			num:     3,
+			current: []int{2, 2, 2, 2},
+			want:    []int{3, 2, 2, 2},
+		},
+		{
+			name:    "duplicate larger number added",
+			num:     3,
+			current: []int{3, 3, 2, 2},
+			want:    []int{3, 3, 3, 2},
+		},
+		{
+			name:    "duplicate larger number added does not push other",
+			num:     4,
+			current: []int{3, 3, 5, 2},
+			want:    []int{4, 3, 5, 2},
+		},
+		{
+			name:    "example row failure step 1", // 888911112111
+			num:     8,
+			current: []int{1, 8, 1, 9, 1, 1, 1, 1, 2, 1, 1, 1},
+			want:    []int{8, 8, 1, 9, 1, 1, 1, 1, 2, 1, 1, 1},
+		},
+		{
+			name:    "example row failure step 2", // 888911112111
+			num:     1,
+			current: []int{8, 8, 1, 9, 1, 1, 1, 1, 2, 1, 1, 1},
+			want:    []int{8, 8, 1, 9, 1, 1, 1, 1, 2, 1, 1, 1},
+		},
+		{
+			name:    "example row failure step 3", // 888911112111
+			num:     8,
+			current: []int{8, 8, 1, 9, 1, 1, 1, 1, 2, 1, 1, 1},
+			want:    []int{8, 8, 8, 9, 1, 1, 1, 1, 2, 1, 1, 1},
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			got := day3.Bigger(tt.num, tt.current)
+			fmt.Println(tt.want)
+			fmt.Println(got)
+			assert.Equal(t, tt.want, got)
 		})
 	}
 }
