@@ -4,6 +4,7 @@ package day3
 import (
 	"io"
 	"strconv"
+	"strings"
 )
 
 // Bank is a bank of batteries. One line of the input.
@@ -83,10 +84,11 @@ func Biggest12(r Bank) int {
 }
 
 func convert(row []int) int {
-	strval := ""
+	var strvalBuilder strings.Builder
 	for _, val := range row {
-		strval += strconv.Itoa(val)
+		strvalBuilder.WriteString(strconv.Itoa(val))
 	}
+	strval := strvalBuilder.String()
 	out, err := strconv.Atoi(strval)
 	if err != nil {
 		panic(err)

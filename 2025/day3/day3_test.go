@@ -2,7 +2,6 @@ package day3_test
 
 import (
 	"bytes"
-	"fmt"
 	"os"
 	"testing"
 
@@ -258,8 +257,6 @@ func TestBigger(t *testing.T) {
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			got := day3.Bigger(tt.num, tt.current)
-			fmt.Println(tt.want)
-			fmt.Println(got)
 			assert.Equal(t, tt.want, got)
 		})
 	}
