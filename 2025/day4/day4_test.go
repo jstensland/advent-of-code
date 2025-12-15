@@ -59,7 +59,7 @@ func TestParseIn(t *testing.T) {
 }
 
 func TestPart1(t *testing.T) {
-	answer := 0 // TODO: update to answer
+	answer := 1516
 	input, err := os.ReadFile("input.txt")
 	require.NoError(t, err, "failed to read input.txt")
 
@@ -67,7 +67,7 @@ func TestPart1(t *testing.T) {
 
 	require.NoError(t, err)
 	if result != answer {
-		assert.Equal(t, result, answer)
+		assert.Equal(t, answer, result)
 	}
 }
 

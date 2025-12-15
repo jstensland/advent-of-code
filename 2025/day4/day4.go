@@ -7,30 +7,24 @@ import (
 	"io"
 )
 
-// CellState represents the state of a location in the grid.
-type CellState int
-
-const (
-	Empty CellState = iota
-	PaperRoll
-)
-
-// Grid represents the parsed input grid where each location can either be a paper roll or empty.
-type Grid struct {
-	Cells  [][]CellState
-	Width  int
-	Height int
-}
-
 func Part1(r io.Reader) (int, error) {
-	answer := 0
-	_, err := ParseIn(r)
+	grid, err := ParseIn(r)
 	if err != nil {
 		return 0, err
 	}
-	// TODO: solve part 1
 
-	return answer, nil
+	// Option 1
+	// - create a grid of counts to match the input grid. or just add an attribut of adjacent counts
+	// - iterate over the input grid, incrementing the adjacent cell's counts for each paper found
+	// - look through the "counts grid" for how many paper locations have few than 4 adjacent cells
+
+	// Option 2
+	// - for each cell, make a func that counts papers in adjacent cells
+	movable := 0
+	for pos := range grid.positions() {
+		movable += grid.CanMove(pos)
+	}
+	return movable, nil
 }
 
 func Part2(r io.Reader) (int, error) {
@@ -78,7 +72,7 @@ func ParseIn(r io.Reader) (Grid, error) {
 
 	return Grid{
 		Cells:  cells,
-		Width:  width,
-		Height: height,
+		width:  width,
+		height: height,
 	}, nil
 }
