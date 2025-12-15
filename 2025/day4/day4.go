@@ -28,14 +28,20 @@ func Part1(r io.Reader) (int, error) {
 }
 
 func Part2(r io.Reader) (int, error) {
-	answer := 0
-	_, err := ParseIn(r)
+	grid, err := ParseIn(r)
 	if err != nil {
 		return 0, err
 	}
-	// TODO: solve part 2
 
-	return answer, nil
+	// Option 1: Iterate multiple waves of removal
+
+	// Option 2: Iterate once, but each time a cell is removed, check how it affected all adjacent cells
+	removed := 0
+	for pos := range grid.positions() {
+		removed += grid.TryRemoval(pos)
+	}
+
+	return removed, nil
 }
 
 func ParseIn(r io.Reader) (Grid, error) {

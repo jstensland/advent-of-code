@@ -27,26 +27,13 @@ func example1() string {
 @.@.@@@.@.`
 }
 
-func example1_mapped() string {
-	return `..xx.xx@x.
-x@@.@.@.@@
-@@@@@.x.@@
-@.@@@@..@.
-x@.@@@@.@x
-.@@@@@@@.@
-.@.@.@.@@@
-x.@@@.@@@@
-.@@@@@@@@.
-x.x.@@@.x.`
-}
-
 func TestParseIn(t *testing.T) {
 	grid, err := day4.ParseIn(bytes.NewReader([]byte(example1())))
 	require.NoError(t, err)
 
 	// Check dimensions
-	assert.Equal(t, 10, grid.Width, "expected width of 10")
-	assert.Equal(t, 10, grid.Height, "expected height of 10")
+	assert.Equal(t, 10, grid.Width(), "expected width of 10")
+	assert.Equal(t, 10, grid.Height(), "expected height of 10")
 
 	// Check some sample cells
 	assert.Equal(t, day4.Empty, grid.Cells[0][0], "position (0,0) should be Empty")
@@ -81,7 +68,7 @@ func TestPart1_Example1(t *testing.T) {
 }
 
 func TestPart2(t *testing.T) {
-	answer := 0 // TODO: update to answer
+	answer := 9122
 	input, err := os.ReadFile("input.txt")
 	require.NoError(t, err, "failed to read input.txt")
 
@@ -94,7 +81,7 @@ func TestPart2(t *testing.T) {
 }
 
 func TestPart2_Example1(t *testing.T) {
-	answer := 0 // TODO: update to answer
+	answer := 43
 
 	result, err := day4.Part2(bytes.NewReader([]byte(example1())))
 

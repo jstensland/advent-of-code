@@ -25,18 +25,6 @@ type position struct {
 	col int
 }
 
-func (g *Grid) positions() iter.Seq[position] {
-	return func(yield func(r position) bool) {
-		for row := range g.height {
-			for col := range g.width {
-				if !yield(position{row, col}) {
-					return
-				}
-			}
-		}
-	}
-}
-
 // CanMove returns 1 if it's paper and has fewer than 4 other rolls around it.
 // Otherwise, it returns 0
 func (g *Grid) CanMove(pos position) int {
@@ -55,6 +43,30 @@ func (g *Grid) CanMove(pos position) int {
 		return 1
 	}
 	return 0
+}
+
+func (g *Grid) TryRemoval(pos position) int {
+	if g.CanMove(pos) == 0 {
+		return 0
+	}
+	g.Cells[pos.row][pos.col] = Empty
+	removed := 1
+	for _, neighbor := range g.surroundingPositions(pos) {
+		removed += g.TryRemoval(neighbor)
+	}
+	return removed
+}
+
+func (g *Grid) positions() iter.Seq[position] {
+	return func(yield func(r position) bool) {
+		for row := range g.height {
+			for col := range g.width {
+				if !yield(position{row, col}) {
+					return
+				}
+			}
+		}
+	}
 }
 
 func (g *Grid) surroundingPositions(pos position) []position {
