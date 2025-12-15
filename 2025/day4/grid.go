@@ -25,15 +25,14 @@ type position struct {
 	col int
 }
 
-// CanMove returns 1 if it's paper and has fewer than 4 other rolls around it.
-// Otherwise, it returns 0
+// CanMove returns 1 if it's paper and has fewer than 4 other rolls around it. Otherwise, it returns 0.
 func (g *Grid) CanMove(pos position) int {
 	if g.Cells[pos.row][pos.col] != PaperRoll {
 		return 0
 	}
 	total := 0
 
-	for _, pos := range g.surroundingPositions(pos) {
+	for pos := range g.surroundingPositions(pos) {
 		if g.Cells[pos.row][pos.col] == PaperRoll {
 			total++
 		}
@@ -51,7 +50,7 @@ func (g *Grid) TryRemoval(pos position) int {
 	}
 	g.Cells[pos.row][pos.col] = Empty
 	removed := 1
-	for _, neighbor := range g.surroundingPositions(pos) {
+	for neighbor := range g.surroundingPositions(pos) {
 		removed += g.TryRemoval(neighbor)
 	}
 	return removed
@@ -69,35 +68,20 @@ func (g *Grid) positions() iter.Seq[position] {
 	}
 }
 
-func (g *Grid) surroundingPositions(pos position) []position {
-	out := []position{}
-
-	// top row
-	if pos.row > 0 {
-		if pos.col > 0 {
-			out = append(out, position{pos.row - 1, pos.col - 1})
-		}
-		out = append(out, position{pos.row - 1, pos.col})
-		if pos.col+1 < g.width {
-			out = append(out, position{pos.row - 1, pos.col + 1})
-		}
-	}
-	// middle row
-	if pos.col > 0 {
-		out = append(out, position{pos.row, pos.col - 1})
-	}
-	if pos.col+1 < g.width {
-		out = append(out, position{pos.row, pos.col + 1})
-	}
-	// lower row
-	if pos.row+1 < g.height {
-		if pos.col > 0 {
-			out = append(out, position{pos.row + 1, pos.col - 1})
-		}
-		out = append(out, position{pos.row + 1, pos.col})
-		if pos.col+1 < g.width {
-			out = append(out, position{pos.row + 1, pos.col + 1})
+// surroundingPositions takes a position on the grid, and returns a slice of the surrounding positions
+// it is aware of the edges of the grid.
+func (g *Grid) surroundingPositions(pos position) iter.Seq[position] {
+	return func(yield func(r position) bool) {
+		for i := pos.row - 1; i <= pos.row+1; i++ {
+			for j := pos.col - 1; j <= pos.col+1; j++ {
+				if i >= 0 && i < g.height && // row on the grid
+					j >= 0 && j < g.width && // col on the grid
+					(i != pos.row || j != pos.col) { // not the position itself
+					if !yield(position{i, j}) {
+						return
+					}
+				}
+			}
 		}
 	}
-	return out
 }
