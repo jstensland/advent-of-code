@@ -101,6 +101,7 @@ func NewDay(day string) error {
 	}
 
 	ctx := context.Background()
+	//nolint:gosec // dayNum is sanitized
 	cmd := exec.CommandContext(ctx, "go", "run", "./cmd/daygen", "-day", strconv.Itoa(dayNum))
 	cmd.Stdout = os.Stdout
 	cmd.Stderr = os.Stderr

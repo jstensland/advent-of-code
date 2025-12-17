@@ -48,6 +48,7 @@ func InvalidIDs(inRange Range) ([]ID, error) {
 }
 
 func Part2(r io.Reader) (int, error) {
+	_ = r
 	return 0, nil
 }
 
@@ -68,7 +69,7 @@ func Part2(r io.Reader) (int, error) {
 // 	return sumIDs(ids), nil
 // }
 
-// InvalidIDV2 returns all invalid IDs for a given range.
+// InvalidIDsV2 returns all invalid IDs for a given range.
 //
 // Invalid IDs are IDs which are made only of some sequence of digits repeated
 // some number of times. For example

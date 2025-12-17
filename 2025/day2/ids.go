@@ -19,6 +19,7 @@ func (id ID) AsInt() int {
 
 // TODO: I want this public but only able to be created via constructor..
 // make a struct with private attribute id?
+
 type InvalidID ID
 
 var ErrIDNotInvalid = errors.New("the id was not invalid")
@@ -81,7 +82,8 @@ func findFirst(id ID) InvalidID {
 		if firstHalf.AsInt() < secondHalf.AsInt() {
 			firstHalf = toID(firstHalf.AsInt() + 1)
 		}
-		first = append(firstHalf, firstHalf...)
+		first = append([]int{}, firstHalf...)
+		first = append(first, firstHalf...)
 	} else {
 		// if start has an odd number of a digits, the lowest 1 followed by all zeros is the next candidate
 		first = make(ID, startingLen+1)
@@ -101,7 +103,8 @@ func findFirst(id ID) InvalidID {
 }
 
 func findFirstV2(id ID) InvalidID {
-	return findFristRep(id, 2)
+	const reps = 2
+	return findFristRep(id, reps)
 }
 
 func findFristRep(id ID, repSize int) InvalidID {
@@ -155,7 +158,8 @@ func findFristRep(id ID, repSize int) InvalidID {
 	if ID(firstInvalid).AsInt() < id.AsInt() {
 		firstInvalid = firstInvalid.NextInvalid()
 	}
-	fmt.Println("first invalid:", firstInvalid)
+	// fmt.Println("first invalid:", firstInvalid)
+
 	return firstInvalid
 }
 
