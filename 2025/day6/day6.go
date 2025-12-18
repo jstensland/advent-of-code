@@ -20,12 +20,15 @@ func Part1(r io.Reader) (int, error) {
 }
 
 func Part2(r io.Reader) (int, error) {
-	answer := 0
-	_, err := ParseIn(r)
+	worksheet, err := ParseInPart2(r)
 	if err != nil {
 		return 0, err
 	}
-	// TODO: solve part 2
 
-	return answer, nil
+	total := 0
+	for _, answer := range worksheet.Solve() {
+		total += answer
+	}
+
+	return total, nil
 }

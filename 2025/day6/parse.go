@@ -49,7 +49,7 @@ func ParseIn(r io.Reader) (*Worksheet, error) {
 		return nil, fmt.Errorf("failed reading input file: %w", err)
 	}
 
-	return InputToProblems(input{Grid: grid, ops: ops}), nil
+	return inputToProblems(input{Grid: grid, ops: ops}), nil
 }
 
 func parseLine(line string) ([]int, error) {
@@ -65,7 +65,7 @@ func parseLine(line string) ([]int, error) {
 	return row, nil
 }
 
-func InputToProblems(in input) *Worksheet {
+func inputToProblems(in input) *Worksheet {
 	problems := []Problem{}
 	for colIdx := range len(in.Grid[0]) {
 		// go down the column and collect the operands
@@ -80,4 +80,70 @@ func InputToProblems(in input) *Worksheet {
 		})
 	}
 	return &Worksheet{problems: problems}
+}
+
+func ParseInPart2(r io.Reader) (*Worksheet, error) {
+	scanner := bufio.NewScanner(r)
+	var grid [][]rune
+
+	for scanner.Scan() {
+		line := scanner.Text()
+		row := []rune(line)
+		if len(row) > 0 {
+			grid = append(grid, row)
+		}
+	}
+	if err := scanner.Err(); err != nil {
+		return nil, fmt.Errorf("failed reading input file: %w", err)
+	}
+	return runeToWorkshet(grid), nil
+}
+
+func runeToWorkshet(grid [][]rune) *Worksheet {
+	width := len(grid[0])
+	height := len(grid)
+	problems := []Problem{}
+
+	runeToOperator := map[rune]Operator{'*': Multiple, '+': Add}
+
+	operands := []int{}
+	for colIdx := width - 1; colIdx >= 0; colIdx-- {
+		columnBlanks := 0
+		columnDigits := []string{}
+		// collect digits from the top rows
+		for rowIdx := range height - 1 {
+			value := grid[rowIdx][colIdx]
+			if value == ' ' {
+				columnBlanks++
+			} else {
+				columnDigits = append(columnDigits, string(value))
+			}
+		}
+		// combine digits into an integer
+		if len(columnDigits) > 0 {
+			operand, err := strconv.Atoi(strings.Join(columnDigits, ""))
+			if err != nil {
+				panic(err)
+			}
+			operands = append(operands, operand)
+		}
+
+		// If you hit blank column record the problem
+		if columnBlanks == height-1 {
+			problems = append(problems, Problem{
+				operands: operands,
+				operator: runeToOperator[grid[height-1][colIdx+1]],
+			})
+			operands = []int{}
+		} else if colIdx == 0 {
+			// If you hit the end record the problem
+			problems = append(problems, Problem{
+				operands: operands,
+				operator: runeToOperator[grid[height-1][colIdx]],
+			})
+			operands = []int{}
+		}
+	}
+
+	return &Worksheet{problems}
 }

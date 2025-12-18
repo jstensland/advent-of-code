@@ -44,7 +44,7 @@ func TestPart1_Example1(t *testing.T) {
 }
 
 func TestPart2(t *testing.T) {
-	answer := 0 // TODO: update to answer
+	answer := 10389131401929
 	input, err := os.ReadFile("input.txt")
 	require.NoError(t, err, "failed to read input.txt")
 
@@ -57,7 +57,7 @@ func TestPart2(t *testing.T) {
 }
 
 func TestPart2_Example1(t *testing.T) {
-	answer := 0 // TODO: update to answer
+	answer := 3263827
 
 	result, err := day6.Part2(bytes.NewReader([]byte(example1())))
 

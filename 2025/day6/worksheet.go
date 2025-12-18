@@ -28,6 +28,8 @@ var Add add
 
 type add struct{}
 
+func (add) String() string { return "+" }
+
 func (add) Operate(in []int) int {
 	result := 0
 	for _, num := range in {
@@ -40,6 +42,8 @@ func (add) Operate(in []int) int {
 var Multiple multiple
 
 type multiple struct{}
+
+func (multiple) String() string { return "*" }
 
 func (multiple) Operate(in []int) int {
 	result := 1

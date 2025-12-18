@@ -36,3 +36,26 @@ func TestParseIn(t *testing.T) {
 	require.Equal(t, []int{64, 23, 314}, problems[3].Operands())
 	require.Equal(t, day6.Add, problems[3].Operator())
 }
+
+func TestParsePart2(t *testing.T) {
+	input := example1()
+	sheet, err := day6.ParseInPart2(bytes.NewReader([]byte(input)))
+
+	require.NoError(t, err)
+	require.NotNil(t, sheet)
+
+	problems := sheet.Problems()
+	// require.Len(t, problems, 4, "should have 4 problems (one per column)")
+	// The rightmost problem is 4 + 431 + 623 = 1058
+	require.Equal(t, []int{4, 431, 623}, problems[0].Operands())
+	require.Equal(t, day6.Add, problems[0].Operator())
+	// The second problem from the right is 175 * 581 * 32 = 3253600
+	require.Equal(t, []int{175, 581, 32}, problems[1].Operands())
+	require.Equal(t, day6.Multiple, problems[1].Operator())
+	// The third problem from the right is 8 + 248 + 369 = 625
+	require.Equal(t, []int{8, 248, 369}, problems[2].Operands())
+	require.Equal(t, day6.Add, problems[2].Operator())
+	// Finally, the leftmost problem is 356 * 24 * 1 = 8544
+	require.Equal(t, []int{356, 24, 1}, problems[3].Operands())
+	require.Equal(t, day6.Multiple, problems[3].Operator())
+}
