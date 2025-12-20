@@ -67,20 +67,18 @@ func TestPart1_Example1(t *testing.T) {
 }
 
 func TestPart2(t *testing.T) {
-	answer := 0 // TODO: update to answer
+	answer := 53916299384254
 	input, err := os.ReadFile("input.txt")
 	require.NoError(t, err, "failed to read input.txt")
 
 	result, err := day7.Part2(bytes.NewReader(input))
 
 	require.NoError(t, err)
-	if result != answer {
-		assert.Equal(t, answer, result)
-	}
+	assert.Equal(t, answer, result)
 }
 
 func TestPart2_Example1(t *testing.T) {
-	answer := 0 // TODO: update to answer
+	answer := 40
 
 	result, err := day7.Part2(bytes.NewReader([]byte(example1())))
 

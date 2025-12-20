@@ -2,7 +2,9 @@ package day7
 
 import (
 	"bufio"
+	"fmt"
 	"io"
+	"strconv"
 	"strings"
 )
 
@@ -55,6 +57,51 @@ func ParseIn(r io.Reader) (*Grid, error) {
 		height:    len(cells),
 		iteration: 0,
 	}, nil
+}
+
+// cache for memoization
+//
+//nolint:gochecknoglobals // cache for memoization
+var cache = map[string]int{}
+
+func (g *Grid) ProgressTimeline(rowIdx, colIdx int) int {
+	key := strconv.Itoa(rowIdx) + "_" + strconv.Itoa(colIdx)
+	if val, ok := cache[key]; ok {
+		return val
+	}
+	// base cases
+	// if we're out of rows, return 1
+	if rowIdx == g.height-1 {
+		return 1
+	}
+	// column idx shouldn't be able to go off the grid. skipping condition
+
+	if g.grid[rowIdx][colIdx] == Empty {
+		// add nothing, no split, just keep going
+		answer := g.ProgressTimeline(rowIdx+1, colIdx)
+		cache[key] = answer
+		return answer
+	}
+
+	if g.grid[rowIdx][colIdx] == Splitter {
+		// return the addition of the add the number of possibility on the right path to
+		// the number of possibilities on the left
+		lanswer := g.ProgressTimeline(rowIdx+1, colIdx-1)
+		cache[key] = lanswer
+		ranswer := g.ProgressTimeline(rowIdx+1, colIdx+1)
+		cache[key] = ranswer
+		return lanswer + ranswer
+	}
+	panic(fmt.Sprintf("AHHH what did I hit?! %v", g.grid[rowIdx][colIdx]))
+}
+
+func (g *Grid) Start() (int, int) {
+	for idx, cell := range g.grid[0] {
+		if cell == Start {
+			return 0, idx
+		}
+	}
+	panic("no start in the first row!")
 }
 
 func (g *Grid) Progress() {

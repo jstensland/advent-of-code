@@ -19,12 +19,12 @@ func Part1(r io.Reader) (int, error) {
 }
 
 func Part2(r io.Reader) (int, error) {
-	answer := 0
-	_, err := ParseIn(r)
+	grid, err := ParseIn(r)
 	if err != nil {
 		return 0, err
 	}
-	// TODO: solve part 2
+	startRow, startCol := grid.Start()
+	answer := grid.ProgressTimeline(startRow+1, startCol)
 
 	return answer, nil
 }
