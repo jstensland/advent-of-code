@@ -89,3 +89,15 @@ func TestSpiralIn(t *testing.T) {
 
 	assert.Equal(t, expected, output)
 }
+
+func TestDistanceFromCenter(t *testing.T) {
+	cmp := day9.FurtherFromCenter(0, 4, 0, 4) // center is (2, 2)
+	center := day9.Point{X: 2, Y: 2}          // distance 0
+	near := day9.Point{X: 2, Y: 3}            // distance 1
+	far := day9.Point{X: 0, Y: 0}             // distance ~2.83
+
+	assert.Equal(t, -1, cmp(far, near), "far point should come before near point")
+	assert.Equal(t, -1, cmp(far, center), "far point should come before center point")
+	assert.Equal(t, -1, cmp(near, center), "near point should come before center point")
+	assert.Equal(t, 1, cmp(near, far), "near point should come after far point")
+}
