@@ -1,7 +1,6 @@
 package day8_test
 
 import (
-	"math"
 	"testing"
 
 	"github.com/stretchr/testify/assert"
@@ -79,7 +78,7 @@ func TestPointFrom_Sorting(t *testing.T) {
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			dist := tt.p1.From(tt.p2)
-			assert.Equal(t, tt.distance, math.Round(dist.Length()))
+			assert.InDelta(t, tt.distance, dist.Length(), 1)
 
 			// Check that the points in the distance are sorted correctly
 			if dist.Ends()[0] != tt.wantP1 {

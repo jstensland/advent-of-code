@@ -122,7 +122,7 @@ func TestNewField_PairsSortedByLength(t *testing.T) {
 
 	// Verify we have pairs (n points create n*(n-1)/2 unique pairs since we exclude self-distances)
 	expectedPairs := len(points) * (len(points) - 1) / 2
-	assert.Equal(t, expectedPairs, len(pairs), "expected n*(n-1)/2 unique pairs for n points")
+	assert.Len(t, pairs, expectedPairs, "expected n*(n-1)/2 unique pairs for n points")
 
 	// Verify pairs are sorted from smallest to largest distance
 	for i := 1; i < len(pairs); i++ {
